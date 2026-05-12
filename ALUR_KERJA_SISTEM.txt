@@ -1,0 +1,44 @@
+==========================================================
+       ALUR KERJA SISTEM: TRASH CLASSIFIER ENGINE V3
+==========================================================
+
+1. TAHAP FRONTEND (Capture & Optimization)
+------------------------------------------
+- Kamera menangkap gambar menggunakan library react-webcam.
+- Gambar dikompresi (Quality 80%, Resolution 720p) untuk mempercepat upload.
+- Data dikonversi menjadi format Base64 (string) untuk pengiriman API.
+
+2. TAHAP BACKEND (API Handling)
+------------------------------------------
+- Node.js (Express) menerima request POST di port 5000.
+- Menggunakan metode Direct REST API ke Google Gemini v1beta.
+- Mengirimkan konfigurasi khusus:
+  * Model: gemini-3-flash-preview
+  * Thinking Mode: includeThoughts (Analisis Mendalam)
+  * responseMimeType: application/json (Output Terstruktur)
+
+3. TAHAP INTELLIGENCE (Gemini 3 Flash Engine)
+---------------------------------------------
+- AI melakukan "Reasoning" (Penalaran) internal terhadap material benda.
+- AI mempertimbangkan standar manajemen limbah di Indonesia (Organik, Anorganik, B3).
+- Output dihasilkan dalam format JSON dengan key: item, kategori, penjelasan, tips, warna_tong.
+
+4. TAHAP DATA CLEANING (Extraction)
+-----------------------------------
+- Backend menerima respon multi-part (Pemikiran AI + Data JSON).
+- Menggunakan Regular Expression (Regex) untuk menyaring dan mengambil hanya data JSON murni.
+- Memastikan data valid dan siap dikirim balik ke pengguna.
+
+5. TAHAP DISPLAY (User Interface)
+---------------------------------
+- React menerima data hasil klasifikasi.
+- Menampilkan hasil dalam bentuk kartu (Card) yang interaktif.
+- Warna tampilan berubah dinamis sesuai kategori sampah:
+  * HIJAU  -> Organik
+  * KUNING -> Anorganik
+  * MERAH  -> B3
+
+==========================================================
+Dibuat oleh: Antigravity AI Engine
+Status: Selesai & Berhasil
+==========================================================

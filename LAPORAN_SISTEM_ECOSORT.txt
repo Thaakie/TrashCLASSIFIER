@@ -1,0 +1,65 @@
+==========================================================================
+                 LAPORAN TEKNIS SISTEM: ECOSORT V3
+          AI-POWERED WASTE CLASSIFICATION SYSTEM (INDONESIA)
+==========================================================================
+
+1. DESKRIPSI PROYEK
+-------------------
+EcoSort V3 adalah aplikasi berbasis web yang dirancang untuk membantu 
+masyarakat Indonesia dalam mengklasifikasikan sampah secara otomatis 
+menggunakan teknologi Computer Vision dan Kecerdasan Buatan (AI). 
+Sistem ini fokus pada tiga kategori utama standar lingkungan: 
+Organik, Anorganik, dan Bahan Berbahaya dan Beracun (Limbah B3).
+
+2. TEKNOLOGI YANG DIGUNAKAN (TECH STACK)
+----------------------------------------
+- Frontend: React.js (Vite), Tailwind CSS, Framer Motion (Animations).
+- Backend: Node.js, Express.js.
+- AI Engine: Google Gemini 3 Flash Preview (Thinking Mode Enabled).
+- API Communication: Axios (Direct REST API Call).
+- Icons: Lucide React.
+- UI Components: Shadcn UI.
+
+3. FITUR UTAMA SISTEM
+---------------------
+a. Smart Scanning: Deteksi material sampah melalui kamera secara real-time.
+b. AI Reasoning: Kemampuan AI untuk "berpikir" dan memberikan alasan logis
+   mengapa suatu benda masuk ke kategori tertentu.
+c. Waste Education: Modul edukasi mengenai jenis sampah (Organik, Anorganik, B3)
+   lengkap dengan contoh benda dan cara penanganannya.
+d. Persistent History: Riwayat pemindaian disimpan di penyimpanan lokal 
+   (Local Storage) sehingga data tidak hilang saat refresh.
+e. Responsive UI: Layout adaptif (Split Screen) untuk kenyamanan pengguna
+   di berbagai perangkat.
+
+4. ALUR KERJA TEKNIS (WORKFLOW)
+-------------------------------
+1. Image Capture: User mengambil foto via React-Webcam. Foto dikompresi 
+   dan dikonversi ke Base64 (JPEG, 0.8 Quality).
+2. API Request: Backend menerima Base64 dan mengirimkan POST Request 
+   langsung ke endpoint Gemini 1.5/3 Flash v1beta.
+3. Thinking Config: Request menyertakan 'thinkingLevel: HIGH' dan 
+   'responseSchema' untuk menjamin output JSON yang akurat.
+4. Data Cleaning: Backend menggunakan Regular Expression (Regex) untuk 
+   mengekstrak data JSON dari respon mentah AI yang berisi narasi pemikiran.
+5. Output: Hasil klasifikasi (Nama benda, kategori, tips, dan warna tong) 
+   ditampilkan secara dinamis di UI.
+
+5. STANDAR KLASIFIKASI (OUTPUT)
+-------------------------------
+- HIJAU (Organik)    : Sisa hayati (makanan, daun). Pengolahan: Kompos.
+- KUNING (Anorganik) : Plastik, Logam, Kaca. Pengolahan: Daur Ulang.
+- MERAH (Limbah B3)  : Baterai, Elektronik, Kimia. Pengolahan: Penanganan Khusus.
+
+6. KESIMPULAN
+-------------
+Sistem ini berhasil mengintegrasikan kecepatan model Flash dengan 
+kedalaman penalaran model Pro melalui fitur 'Thinking Mode', 
+menjadikannya alat yang sangat efektif untuk edukasi pengelolaan 
+sampah di Indonesia.
+
+==========================================================================
+Status Proyek: Selesai & Teruji
+Engine: Antigravity AI
+Tanggal Laporan: 13 Mei 2026
+==========================================================================
