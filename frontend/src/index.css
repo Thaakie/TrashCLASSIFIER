@@ -1,46 +1,54 @@
 @import "tailwindcss";
 
 @theme {
-  --color-border: #B9B4C7;
-  --color-input: #B9B4C7;
-  --color-ring: #352F44;
+  /* Branding Colors (Mystic Purple) */
   --color-background: #FAF0E6;
   --color-foreground: #352F44;
-
-  --color-primary: #352F44;
-  --color-primary-foreground: #FAF0E6;
-
-  --color-secondary: #5C5470;
-  --color-secondary-foreground: #FAF0E6;
-
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #FAF0E6;
-
-  --color-muted: #B9B4C7;
-  --color-muted-foreground: #5C5470;
-
-  --color-accent: #B9B4C7;
-  --color-accent-foreground: #352F44;
-
-  --color-popover: #FFFFFF;
-  --color-popover-foreground: #352F44;
-
   --color-card: #FFFFFF;
   --color-card-foreground: #352F44;
+  --color-primary: #352F44;
+  --color-primary-foreground: #FAF0E6;
+  --color-secondary: #5C5470;
+  --color-secondary-foreground: #FAF0E6;
+  --color-muted: #B9B4C7;
+  --color-muted-foreground: #5C5470;
+  --color-accent: #B9B4C7;
+  --color-border: #B9B4C7;
+  
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 2.5rem;
+  --radius-4xl: 4rem;
 
-  --color-organik: #4ade80;
-  --color-anorganik: #facc15;
-  --color-b3: #f87171;
-
-  --radius-lg: 1rem;
-  --radius-md: 0.75rem;
-  --radius-sm: 0.5rem;
+  /* Custom Font */
+  --font-sans: "Outfit", sans-serif;
 }
 
 @layer base {
-  body {
-    background-color: #FAF0E6;
-    color: #352F44;
-    font-family: 'Inter', system-ui, sans-serif;
+  /* Dark Mode Overrides (v4 uses .dark class on html) */
+  .dark {
+    --color-background: #1A1625;
+    --color-foreground: #FAF0E6;
+    --color-card: #2D2739;
+    --color-card-foreground: #FAF0E6;
+    --color-primary: #FAF0E6;
+    --color-primary-foreground: #352F44;
+    --color-secondary: #352F44;
+    --color-border: #352F44;
+    --color-muted: #352F44;
+    --color-muted-foreground: #B9B4C7;
   }
 }
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full;
+  }
+}
+
