@@ -144,9 +144,9 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                     onClick={() => fileInputRef.current?.click()}
                     variant="outline"
                     size="lg"
-                    className="rounded-[2.5rem] h-24 w-24 flex items-center justify-center border-2 hover:bg-muted transition-colors"
+                    className="rounded-[2rem] h-20 w-20 flex items-center justify-center border-2 hover:bg-muted transition-colors"
                   >
-                    <Upload className="w-7 h-7 text-muted-foreground" />
+                    <Upload className="w-6 h-6 text-muted-foreground" />
                   </Button>
                 </>
               )}
