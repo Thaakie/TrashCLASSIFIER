@@ -1,20 +1,21 @@
 ==========================================================================
-                 LAPORAN TEKNIS SISTEM: ECOSORT V3
+                 LAPORAN TEKNIS SISTEM: ECOSORT V3.5
           AI-POWERED WASTE CLASSIFICATION SYSTEM (INDONESIA)
 ==========================================================================
 
 1. DESKRIPSI PROYEK
 -------------------
-EcoSort V3 adalah aplikasi berbasis web yang dirancang untuk membantu 
+EcoSort V3.5 adalah aplikasi berbasis web yang dirancang untuk membantu 
 masyarakat Indonesia dalam mengklasifikasikan sampah secara otomatis 
 menggunakan teknologi Computer Vision dan Kecerdasan Buatan (AI). 
 Sistem ini menggunakan arsitektur modular untuk performa dan skalabilitas tinggi.
 
 2. TEKNOLOGI YANG DIGUNAKAN (TECH STACK)
 ----------------------------------------
-- Frontend: React.js (Vite), Tailwind CSS, Framer Motion, React Router (Navigation).
+- Frontend: React.js (Vite), Tailwind CSS v4, Framer Motion, React Router.
 - Backend: Node.js, Express.js (Modular Router & Controller).
 - AI Engine: Google Gemini 3.1 Flash Lite (High Efficiency).
+- Geo-Locator: OpenStreetMap (Overpass API) with Multi-Server Fallback.
 - AI SDK: Official Google Generative AI SDK (@google/generative-ai).
 - Icons: Lucide React.
 - UI Components: Shadcn UI (Radix UI).
@@ -24,44 +25,43 @@ Sistem ini menggunakan arsitektur modular untuk performa dan skalabilitas tinggi
 Sistem telah direfaktorisasi menjadi struktur modular:
 
 A. Frontend Architecture:
-   - src/pages/: Komponen halaman terpisah (Home, Scanner, Impact, Education).
-   - src/layouts/: Komponen navigasi global (Navbar, Footer).
-   - src/hooks/: Custom hooks untuk logika (useTrashScanner).
-   - React Router: Implementasi navigasi berbasis URL (SPA).
+   - src/pages/: Halaman terpisah (Home, Education, Locations, Impact).
+   - src/hooks/: Custom hooks untuk logika kamera & AI (useTrashScanner).
+   - Dynamic Routes: Penanganan navigasi antar fitur secara halus.
 
 B. Backend Architecture:
-   - src/routes/: Pemisahan endpoint API (/api/classify).
-   - src/controllers/: Logika bisnis dan pemrosesan gambar terisolasi.
-   - src/config/: Konfigurasi pusat untuk AI Engine dan JSON Schema.
+   - src/config/: Konfigurasi pusat untuk prompt AI dan JSON Schema.
+   - src/controllers/: Logika bisnis terisolasi untuk klasifikasi gambar.
+   - Error Handler: Penanganan global untuk API limit (429) & server timeouts.
 
 4. FITUR UTAMA & PENINGKATAN
 ----------------------------
 a. Smart Scanning: Deteksi real-time dengan kamera atau galeri foto.
-b. Side-by-Side Dashboard: Visualisasi statistik dampak lingkungan (CO2 Saved, Points).
-c. Daily Eco-Tips: Pesan edukasi harian dinamis untuk meningkatkan engagement.
-d. Retry Mechanism: Logika percobaan ulang otomatis jika terjadi limit kuota API.
-e. Gallery Upload: Dukungan pemrosesan file gambar dari penyimpanan lokal.
-f. Dark Mode Support: Interface adaptif untuk kenyamanan visual.
+b. AI Strict Intelligence: Mampu membedakan sampah vs non-sampah (wajah, hewan, dll).
+c. Real-time Bank Sampah Locator: Integrasi OpenStreetMap (OSM) untuk mencari 
+   lokasi pembuangan terdekat di seluruh Indonesia secara dinamis.
+d. Multi-Server Fallback: Sistem cadangan otomatis jika server API satelit sibuk.
+e. Impact Tracking: Visualisasi statistik dampak lingkungan (CO2 Saved, Points).
+f. Voice-over Guidance: Fitur suara untuk memberikan tips edukatif secara otomatis.
+g. Dark/Light Mode: Interface premium dengan dukungan tema adaptif.
 
-5. ALUR KERJA TEKNIS (WORKFLOW V3)
-----------------------------------
-1. Input: User mengambil foto via webcam atau mengunggah dari galeri.
-2. Processing: Data dikonversi ke Base64 dan dikirim ke backend modular.
-3. AI Analysis: Backend menggunakan SDK resmi Gemini untuk analisis gambar 
-   dengan instruksi sistem ahli lingkungan Indonesia.
-4. Response Format: Output dijamin dalam format JSON terstruktur untuk 
-   menghindari error parsing.
-5. Storage: Hasil scan otomatis tersimpan di Local Storage dan diumpankan 
-   ke dashboard Impact.
+5. ALUR KERJA TEKNIS (WORKFLOW V3.5)
+------------------------------------
+1. Input & Localization: User memberikan input gambar; sistem mendeteksi lokasi geografis.
+2. Analysis: Backend Gemini 3.1 Flash memproses gambar dengan standar lingkungan Indonesia.
+3. Logic handling: Sistem membedakan kategori (Organik/Anorganik/B3) atau menolak (Bukan Sampah).
+4. Discovery: Jika sampah anorganik terdeteksi, user dapat langsung mencari 
+   Bank Sampah terdekat via satelit OSM.
+5. Persistence: Data histori tersimpan di Local Storage untuk akumulasi poin.
 
-6. STATUS PENANGANAN QUOTA
+6. STATUS PENANGANAN SISTEM
 --------------------------
-Untuk mengatasi limitasi kuota API (Error 429), sistem saat ini menggunakan:
-- Model: Gemini 3.1 Flash Lite (Kuota RPD lebih besar: 500/hari).
-- Logic: Automatic exponential backoff (Retry per 10 detik).
+- Gemini API: Stabil dengan model Flash Lite (Retry 10s enabled).
+- Geolocation: Aktif (Mendukung radius pencarian 20km).
+- Data Source: OpenStreetMap (Overpass API) dengan fallback mechanism.
 
 ==========================================================================
-Status Proyek: Selesai & Teroptimasi
+Status Proyek: Fitur Lengkap (Stable Release)
 Engine: Antigravity AI
 Tanggal Laporan: 13 Mei 2026
 ==========================================================================
