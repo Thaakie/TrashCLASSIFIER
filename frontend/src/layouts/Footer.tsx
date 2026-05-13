@@ -31,9 +31,21 @@ const Footer = () => {
         <div>
           <h4 className="font-black text-xs uppercase tracking-widest mb-6">Connect</h4>
           <ul className="space-y-4 text-sm font-bold text-muted-foreground">
-            <li className="flex items-center gap-2 hover:text-primary cursor-pointer"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> Instagram</li>
-            <li className="flex items-center gap-2 hover:text-primary cursor-pointer"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> LinkedIn</li>
-            <li className="flex items-center gap-2 hover:text-primary cursor-pointer"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> GitHub</li>
+            <li>
+              <a href="https://kiee.vercel.app/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Portfolio
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/m-atha-dzaki-yunada-35052131a/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" /> LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/Thaakie" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" /> GitHub
+              </a>
+            </li>
           </ul>
         </div>
       </div>

@@ -22,6 +22,7 @@
   --color-ring: var(--ring);
   --radius-3xl: 4rem;
   --font-sans: "Outfit", sans-serif;
+  --animate-spin-slow: spin 3s linear infinite;
 }
 
 :root {

@@ -63,15 +63,15 @@ const Home = () => {
               initial={{ rotate: 5, scale: 0.9 }}
               animate={{ rotate: -2, scale: 1 }}
               whileHover={{ rotate: 0, scale: 1.02 }} 
-              className="bg-card rounded-[3.5rem] p-4 shadow-2xl border border-border transition-all duration-700 relative"
+              className="bg-card rounded-2xl p-4 shadow-2xl border border-border transition-all duration-700 relative"
             >
               <img 
                 src="https://i.pinimg.com/736x/ee/15/0a/ee150a96450457914ce471ac90cda4e8.jpg" 
-                className="rounded-[2.5rem] w-full h-auto grayscale-[0.2] hover:grayscale-0 transition-all duration-700 shadow-sm" 
+                className="rounded-xl w-full h-auto grayscale-[0.2] hover:grayscale-0 transition-all duration-700 shadow-sm" 
                 alt="Hero" 
               />
               
-              <div className="absolute bottom-6 left-6 right-6 glass dark:glass-dark p-6 rounded-[2rem] shadow-xl border border-white/10">
+              <div className="absolute bottom-6 left-6 right-6 glass dark:glass-dark p-6 rounded-2xl shadow-xl border border-white/10">
                 <div className="flex justify-between items-center">
                   <div className="text-foreground">
                     <p className="text-[9px] font-black uppercase tracking-[0.2em] mb-1 text-primary">Impact Report</p>

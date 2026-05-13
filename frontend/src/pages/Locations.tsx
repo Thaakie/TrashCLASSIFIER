@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { MapPin, Phone, Clock, ExternalLink, Search, Trash2, Navigation, Loader2, AlertCircle } from 'lucide-react'
+import { MapPin, Clock, ExternalLink, Search, Trash2, Navigation, Loader2, AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 
 interface WasteBank {
@@ -244,7 +244,7 @@ const Locations = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: i * 0.05 }}
-              className={`group relative p-8 rounded-[3rem] border shadow-lg hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col overflow-hidden ${
+              className={`group relative p-8 rounded-2xl border shadow-lg hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col overflow-hidden ${
                 loc.isRealtime ? 'bg-primary/5 border-primary/10' : 'bg-card border-border'
               }`}
             >

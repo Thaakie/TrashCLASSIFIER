@@ -49,7 +49,7 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse['data']) => v
     setResult(null)
     
     try {
-      const response = await axios.post<ApiResponse>('http://localhost:5001/api/classify', {
+      const response = await axios.post<ApiResponse>('/api/classify', {
         imageBase64: image
       })
 

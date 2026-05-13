@@ -38,7 +38,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-            <div className="bg-primary text-primary-foreground p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
+            <div className="bg-primary text-primary-foreground p-8 rounded-2xl shadow-xl relative overflow-hidden group">
               <div className="relative z-10 space-y-4">
                 <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
                   <BarChart3 className="w-5 h-5" />
@@ -54,7 +54,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card p-6 rounded-[2.5rem] shadow-lg border border-border relative overflow-hidden group">
+              <div className="bg-card p-6 rounded-2xl shadow-lg border border-border relative overflow-hidden group">
                 <div className="relative z-10 space-y-4">
                   <div className="w-10 h-10 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center">
                     <Leaf className="w-5 h-5" />
@@ -68,7 +68,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
                 </div>
               </div>
 
-              <div className="bg-card p-6 rounded-[2.5rem] shadow-lg border border-border relative overflow-hidden group">
+              <div className="bg-card p-6 rounded-2xl shadow-lg border border-border relative overflow-hidden group">
                 <div className="relative z-10 space-y-4">
                   <div className="w-10 h-10 bg-blue-500/10 text-blue-600 rounded-xl flex items-center justify-center">
                     <ShieldCheck className="w-5 h-5" />
@@ -86,7 +86,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
         </div>
 
         {/* Right Column: History */}
-        <div className="lg:col-span-7 bg-card border border-border rounded-[3.5rem] p-8 min-h-[500px] flex flex-col shadow-xl relative">
+        <div className="lg:col-span-7 bg-card border border-border rounded-2xl p-8 min-h-[500px] flex flex-col shadow-xl relative">
           <div className="flex items-center justify-between mb-8">
             <div className="space-y-0.5">
               <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Recent History</p>
@@ -103,7 +103,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
           <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar space-y-3 max-h-[600px]">
             {history.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center py-20 space-y-4">
-                <div className="w-20 h-20 bg-muted rounded-[2rem] flex items-center justify-center">
+                <div className="w-20 h-20 bg-muted rounded-xl flex items-center justify-center">
                   <HistoryIcon className="w-10 h-10 text-muted-foreground/20" />
                 </div>
                 <p className="text-muted-foreground font-black uppercase tracking-widest text-[9px]">No scan history found yet</p>
@@ -115,7 +115,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
                   initial={{ opacity: 0, y: 10 }} 
                   animate={{ opacity: 1, y: 0 }} 
                   transition={{ delay: i * 0.05 }} 
-                  className="bg-muted/30 p-5 rounded-[2rem] border border-transparent hover:border-primary/10 hover:bg-muted/50 transition-all flex justify-between items-center group"
+                  className="bg-muted/30 p-5 rounded-xl border border-transparent hover:border-primary/10 hover:bg-muted/50 transition-all flex justify-between items-center group"
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm group-hover:rotate-12 transition-transform ${
