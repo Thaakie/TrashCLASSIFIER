@@ -84,5 +84,4 @@
 
 ## 📄 License
 
-Developed by **Antigravity AI Engine** for **EcoSort Project**.
 © 2026 EcoSort Indonesia.
