@@ -47,31 +47,68 @@ const STATIC_LOCATIONS: WasteBank[] = [
   }
 ]
 
+/**
+ * Helper to fetch with a timeout and explicit logging
+ */
+const fetchWithTimeout = async (url: string, options: any = {}, timeout = 80000) => {
+  const controller = new AbortController()
+  const id = setTimeout(() => {
+    console.warn(`[Timeout] Server ${new URL(url).hostname} tidak merespon dalam ${timeout}ms. Memutus koneksi...`)
+    controller.abort()
+  }, timeout)
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    })
+    return response
+  } finally {
+    clearTimeout(id)
+  }
+}
+
 const Locations = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [realtimeLocations, setRealtimeLocations] = useState<WasteBank[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchNearbyBankSampah = () => {
+  const fetchNearbyBankSampah = async () => {
+    console.log("--- Memulai Pencarian Lokasi Terdekat ---")
+    
     if (!navigator.geolocation) {
       setError("Geolocation tidak didukung oleh browser Anda.")
+      return
+    }
+
+    if (!navigator.onLine) {
+      setError("Anda sedang offline. Silahkan cek koneksi internet Anda.")
       return
     }
 
     setLoading(true)
     setError(null)
 
-    navigator.geolocation.getCurrentPosition(async (position) => {
+    try {
+      console.log("[1/3] Mengambil koordinat GPS...")
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+        })
+      })
+
       const { latitude, longitude } = position.coords
+      console.log(`[GPS Sukses] Lat: ${latitude}, Lon: ${longitude}`)
       
       const query = `
         [out:json][timeout:25];
         (
-          node["name"~"Sampah",i](around:20000, ${latitude}, ${longitude});
-          node["name"~"TPS3R",i](around:20000, ${latitude}, ${longitude});
-          node["amenity"="waste_transfer_station"](around:20000, ${latitude}, ${longitude});
-          node["recycling_type"="centre"](around:20000, ${latitude}, ${longitude});
+          node["name"~"Sampah",i](around:10000, ${latitude}, ${longitude});
+          node["name"~"TPS3R",i](around:10000, ${latitude}, ${longitude});
+          node["amenity"="waste_transfer_station"](around:10000, ${latitude}, ${longitude});
+          node["recycling_type"="centre"](around:10000, ${latitude}, ${longitude});
         );
         out body;
       `
@@ -79,19 +116,30 @@ const Locations = () => {
       const instances = [
         "https://overpass-api.de/api/interpreter",
         "https://overpass.kumi.systems/api/interpreter",
-        "https://overpass.n.osmsurvey.org/api/interpreter"
+        "https://lz4.overpass-api.de/api/interpreter",
+        "https://z.overpass-api.de/api/interpreter"
       ]
 
       let success = false
-      for (const instance of instances) {
+      let lastError = ""
+
+      console.log("[2/3] Menghubungi server satelit Overpass...")
+      for (const [index, instance] of instances.entries()) {
         if (success) break
+        const host = new URL(instance).hostname
+        console.log(`[Percobaan ${index + 1}] Mencoba server: ${host}...`)
         
         try {
-          const response = await fetch(`${instance}?data=${encodeURIComponent(query)}`)
+          const response = await fetchWithTimeout(`${instance}?data=${encodeURIComponent(query)}`, {}, 30000)
+          console.log(`[Respon] ${host} mengembalikan status: ${response.status} ${response.statusText}`)
           
-          if (!response.ok) continue
+          if (!response.ok) {
+            lastError = `Server ${host} sibuk (${response.status})`
+            continue
+          }
           
           const data = await response.json()
+          console.log(`[Data] Berhasil menerima ${data.elements?.length || 0} lokasi dari ${host}`)
           
           const mapped: WasteBank[] = data.elements.map((el: any) => ({
             name: el.tags.name || "Fasilitas Pengelolaan Sampah",
@@ -107,19 +155,24 @@ const Locations = () => {
 
           setRealtimeLocations(mapped)
           success = true
-        } catch (err) {
-          console.error(`Gagal pada server ${instance}:`, err);
+          console.log("[Sukses] Data berhasil dipetakan dan ditampilkan.")
+        } catch (err: any) {
+          lastError = err.name === 'AbortError' ? "Koneksi timeout" : err.message
+          console.error(`[Gagal] Server ${host}:`, lastError);
         }
       }
 
       if (!success) {
-        setError("Semua server satelit sedang sibuk. Mohon coba lagi.")
+        throw new Error(lastError || "Semua server satelit sedang sibuk. Mohon coba lagi.")
       }
+    } catch (err: any) {
+      console.error("[Error Fatal]", err)
+      const errorMsg = err.code === 1 ? "Izin lokasi ditolak atau GPS tidak aktif." : (err.message || "Terjadi kesalahan saat mencari lokasi.")
+      setError(errorMsg)
+    } finally {
       setLoading(false)
-    }, (geoErr) => {
-      setError("Izin lokasi ditolak atau GPS tidak aktif.");
-      setLoading(false)
-    })
+      console.log("--- Proses Selesai ---")
+    }
   }
 
   const allLocations = [...realtimeLocations, ...STATIC_LOCATIONS]
