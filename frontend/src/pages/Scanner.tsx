@@ -10,7 +10,7 @@ const Scanner = ({ addToHistory }: ScannerProps) => {
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }} 
       animate={{ opacity: 1, scale: 1 }} 
-      className="max-w-7xl mx-auto px-8 min-h-[calc(100vh-160px)] flex flex-col justify-center"
+      className="w-full max-w-7xl mx-auto px-4 md:px-8 min-h-[calc(100vh-180px)] flex flex-col justify-center"
     >
       <TrashClassifier onResultSaved={addToHistory} />
     </motion.div>

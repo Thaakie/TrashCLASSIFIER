@@ -62,7 +62,7 @@ function App() {
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-muted overflow-x-hidden transition-colors duration-500">
       <Navbar isDark={isDark} setIsDark={setIsDark} />
       
-      <main className="pt-24 pb-20">
+      <main className="w-full pt-24 pb-20">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />} />

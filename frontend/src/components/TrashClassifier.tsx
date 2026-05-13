@@ -31,7 +31,7 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
   } = useTrashScanner(onResultSaved);
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto py-6 px-6">
+    <div className="space-y-8 max-w-5xl mx-auto py-6 px-0 md:px-6">
       <div className="text-center space-y-2">
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
@@ -40,7 +40,7 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
         >
           EcoSort Intelligence
         </motion.div>
-        <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight text-balance">
+        <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight text-balance px-4">
           Scan the <span className="text-primary italic">Future.</span>
         </h2>
         <p className="text-muted-foreground dark:text-foreground/60 font-medium text-sm max-w-2xl mx-auto">
@@ -118,19 +118,18 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
               </div>
             )}
 
-            <div className="p-8 flex flex-col sm:flex-row justify-center gap-4">
+            <div className="p-6 md:p-8 flex flex-row justify-center items-center gap-3 md:gap-4">
               {!capturedImage && (
                 <>
                   <Button 
                     onClick={capture}
                     disabled={loading}
-                    size="lg"
-                    className="rounded-[2rem] bg-primary text-primary-foreground h-20 px-10 gap-3 group shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)] hover:scale-105 transition-all"
+                    className="flex-grow rounded-[2rem] bg-primary text-primary-foreground h-16 md:h-20 px-6 md:px-10 gap-2 md:gap-3 group shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)] hover:scale-105 transition-all"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
-                      <Camera className="w-5 h-5" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                      <Camera className="w-4 h-4 md:w-5 md:h-5" />
                     </div>
-                    <span className="font-black uppercase tracking-widest text-[10px]">Capture Object</span>
+                    <span className="font-black uppercase tracking-widest text-[9px] md:text-[10px]">Capture Object</span>
                   </Button>
                   
                   <input 
@@ -143,10 +142,9 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                   <Button 
                     onClick={() => fileInputRef.current?.click()}
                     variant="outline"
-                    size="lg"
-                    className="rounded-[2rem] h-20 w-20 flex items-center justify-center border-2 hover:bg-muted transition-colors"
+                    className="rounded-[2rem] h-16 w-16 md:h-20 md:w-20 flex-shrink-0 flex items-center justify-center border-2 hover:bg-muted transition-colors"
                   >
-                    <Upload className="w-6 h-6 text-muted-foreground" />
+                    <Upload className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground" />
                   </Button>
                 </>
               )}
@@ -244,12 +242,12 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                 key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="h-full flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-border rounded-[4rem] space-y-6"
+                className="h-full flex flex-col items-center justify-center text-center p-8 md:p-12 border-2 border-dashed border-border rounded-[4rem] space-y-6 mx-4 md:mx-0"
               >
                 <div className="w-24 h-24 bg-muted rounded-[2.5rem] flex items-center justify-center text-muted-foreground/30">
                   <Camera className="w-12 h-12" />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 px-6">
                   <p className="text-2xl font-black tracking-tighter">Waiting for Data</p>
                   <p className="text-muted-foreground font-medium">Lakukan scan objek untuk melihat analisis mendalam.</p>
                 </div>
