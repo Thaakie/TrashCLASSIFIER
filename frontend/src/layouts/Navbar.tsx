@@ -18,16 +18,16 @@ const Navbar = ({ isDark, setIsDark }: NavbarProps) => {
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
-        <Link to="/" className="flex items-center gap-2 font-bold text-2xl tracking-tighter">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Recycle className="text-primary-foreground w-5 h-5" />
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl">
+      <div className="glass dark:glass-dark rounded-[2rem] px-8 py-3 flex justify-between items-center shadow-2xl shadow-black/5">
+        <Link to="/" className="flex items-center gap-2.5 font-black text-xl tracking-tighter group">
+          <div className="w-9 h-9 bg-primary text-primary-foreground rounded-xl flex items-center justify-center transition-transform group-hover:rotate-12">
+            <Recycle className="w-5 h-5" />
           </div>
-          EcoSort
+          <span className="hidden sm:inline">EcoSort</span>
         </Link>
 
-        <div className="hidden md:flex gap-10 text-sm font-bold text-muted-foreground">
+        <div className="hidden md:flex gap-8 text-[11px] font-black uppercase tracking-widest text-muted-foreground dark:text-foreground/70">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
@@ -51,16 +51,16 @@ const Navbar = ({ isDark, setIsDark }: NavbarProps) => {
           ))}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button 
             onClick={() => setIsDark(!isDark)}
-            className="p-2 rounded-full hover:bg-muted transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-muted/50 transition-colors"
           >
-            {isDark ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
           </button>
           <Link to="/scanner">
-            <Button className="rounded-full bg-primary text-primary-foreground hover:opacity-90 px-6 hidden sm:flex">
-              Start Scan
+            <Button className="rounded-full bg-primary text-primary-foreground hover:scale-105 transition-transform px-6 text-[10px] font-black uppercase tracking-widest hidden sm:flex">
+              Scanner
             </Button>
           </Link>
         </div>

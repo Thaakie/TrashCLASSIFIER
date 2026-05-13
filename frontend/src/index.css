@@ -1,54 +1,87 @@
 @import "tailwindcss";
 
 @theme {
-  /* Branding Colors (Mystic Purple) */
-  --color-background: #FAF0E6;
-  --color-foreground: #352F44;
-  --color-card: #FFFFFF;
-  --color-card-foreground: #352F44;
-  --color-primary: #352F44;
-  --color-primary-foreground: #FAF0E6;
-  --color-secondary: #5C5470;
-  --color-secondary-foreground: #FAF0E6;
-  --color-muted: #B9B4C7;
-  --color-muted-foreground: #5C5470;
-  --color-accent: #B9B4C7;
-  --color-border: #B9B4C7;
-  
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2rem;
-  --radius-3xl: 2.5rem;
-  --radius-4xl: 4rem;
-
-  /* Custom Font */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-3xl: 4rem;
   --font-sans: "Outfit", sans-serif;
 }
 
+:root {
+  --background: #FAF9F6;
+  --foreground: #1A1A1A;
+  --card: #FFFFFF;
+  --card-foreground: #1A1A1A;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A1A;
+  --primary: #1A1A1A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F4F4F5;
+  --secondary-foreground: #18181B;
+  --muted: #F0F0F0;
+  --muted-foreground: #737373;
+  --accent: #F4F4F5;
+  --accent-foreground: #18181B;
+  --destructive: #EF4444;
+  --destructive-foreground: #FAFAFA;
+  --border: #E5E5E5;
+  --input: #E5E5E5;
+  --ring: #1A1A1A;
+}
+
+.dark {
+  --background: #090C0B; /* Deep Forest Black */
+  --foreground: #CBD5E1; /* Muted Slate White - much softer on eyes */
+  --card: #111614;      /* Slightly lighter forest shade */
+  --card-foreground: #CBD5E1;
+  --popover: #111614;
+  --popover-foreground: #CBD5E1;
+  --primary: #10B981;    /* Emerald Green - Eco themed */
+  --primary-foreground: #090C0B;
+  --secondary: #1E293B;
+  --secondary-foreground: #CBD5E1;
+  --muted: #151D1A;
+  --muted-foreground: #64748B;
+  --accent: #151D1A;
+  --accent-foreground: #CBD5E1;
+  --destructive: #EF4444;
+  --destructive-foreground: #F1F5F9;
+  --border: #1E2926;
+  --input: #1E2926;
+  --ring: #10B981;
+}
+
 @layer base {
-  /* Dark Mode Overrides (v4 uses .dark class on html) */
-  .dark {
-    --color-background: #1A1625;
-    --color-foreground: #FAF0E6;
-    --color-card: #2D2739;
-    --color-card-foreground: #FAF0E6;
-    --color-primary: #FAF0E6;
-    --color-primary-foreground: #352F44;
-    --color-secondary: #352F44;
-    --color-border: #352F44;
-    --color-muted: #352F44;
-    --color-muted-foreground: #B9B4C7;
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    @apply transition-colors duration-700 antialiased;
   }
 }
 
 @layer utilities {
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
+  .glass {
+    @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
   }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-muted rounded-full;
+  .glass-dark {
+    @apply backdrop-blur-3xl bg-[#020202]/98 border border-white/5 shadow-2xl;
   }
 }
-

@@ -1,11 +1,10 @@
 import Webcam from 'react-webcam';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { 
   Camera, RefreshCw, AlertCircle, Recycle, 
-  Volume2, VolumeX, Download, FileText, Image as ImageIcon 
+  Volume2, VolumeX, Download, Lightbulb, 
+  Trash2, Upload, Zap, ChevronRight
 } from 'lucide-react';
 import { useTrashScanner } from '../hooks/useTrashScanner';
 
@@ -32,166 +31,248 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
   } = useTrashScanner(onResultSaved);
 
   return (
-    <div className="w-full">
-      <div className={`grid gap-8 transition-all duration-500 items-start ${result ? 'lg:grid-cols-2' : 'grid-cols-1 max-w-xl mx-auto'}`}>
-        
-        {/* Camera Section */}
-        <motion.div layout className="relative w-full">
-          <Card className="overflow-hidden border-none shadow-2xl bg-card rounded-[2.5rem] border border-border relative aspect-video">
-            <div className="relative w-full h-full bg-slate-900 overflow-hidden">
-              {!capturedImage ? (
+    <div className="space-y-8 max-w-5xl mx-auto py-6 px-6">
+      <div className="text-center space-y-2">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-[9px] font-black uppercase tracking-[0.2em]"
+        >
+          EcoSort Intelligence
+        </motion.div>
+        <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight text-balance">
+          Scan the <span className="text-primary italic">Future.</span>
+        </h2>
+        <p className="text-muted-foreground dark:text-foreground/60 font-medium text-sm max-w-2xl mx-auto">
+          Gunakan kekuatan AI untuk mengidentifikasi sampah secara instan dan dapatkan panduan pengelolaan yang tepat.
+        </p>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-8 items-start">
+        {/* Scanner Section */}
+        <div className="relative group order-2 lg:order-1">
+          <div className="absolute -inset-4 bg-primary/5 rounded-[3.5rem] -z-10 group-hover:bg-primary/10 transition-colors duration-700" />
+          
+          <div className="relative bg-card rounded-[3rem] p-3 border border-border shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden">
+            {!capturedImage ? (
+              <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/3] bg-muted">
                 <Webcam
                   audio={false}
                   ref={webcamRef}
                   screenshotFormat="image/jpeg"
+                  videoConstraints={{ facingMode: "environment" }}
                   className="w-full h-full object-cover"
-                  videoConstraints={{ facingMode: 'environment', aspectRatio: 1.7777777778 }}
-                />
-              ) : (
-                <img src={capturedImage} className="w-full h-full object-cover" alt="Captured" />
-              )}
-
-              <AnimatePresence>
-                {loading && (
-                  <motion.div 
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-slate-900/70 backdrop-blur-md flex flex-col items-center justify-center text-white z-20"
-                  >
-                    <motion.div 
-                      className="absolute left-0 right-0 h-1 bg-primary shadow-[0_0_20px_white] z-30"
-                      animate={{ top: ["0%", "100%", "0%"] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    />
-                    <motion.div 
-                      animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full"
-                    />
-                    <motion.p 
-                      key={thinkingStep}
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-4 font-black tracking-widest uppercase text-[9px] text-center px-6"
-                    >
-                      {thinkingSteps[thinkingStep]}
-                    </motion.p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Overlay Controls */}
-              <div className="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-4 z-10">
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  onChange={handleFileUpload} 
-                  accept="image/*" 
-                  className="hidden" 
                 />
                 
-                {!result && !loading ? (
-                  <>
-                    <Button 
-                      onClick={() => fileInputRef.current?.click()} 
-                      className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/30 shadow-xl hover:scale-105 transition-all p-0"
-                    >
-                      <ImageIcon className="w-5 h-5 text-white" />
-                    </Button>
-                    
-                    <Button 
-                      onClick={capture} 
-                      className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md hover:bg-white/40 border-2 border-white/50 shadow-2xl hover:scale-105 transition-all p-0 group"
-                    >
-                      <Camera className="w-8 h-8 text-white" />
-                    </Button>
-                  </>
-                ) : !loading && (
-                  <Button onClick={reset} className="rounded-full px-6 py-2 bg-white/20 backdrop-blur-md hover:bg-white/40 border border-white/50 text-white gap-2 text-xs font-bold">
-                    <RefreshCw className="w-4 h-4" /> Reset
-                  </Button>
+                {/* Viewfinder Overlay */}
+                <div className="absolute inset-0 border-[1px] border-white/20 rounded-[3rem] pointer-events-none m-10">
+                  <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-primary rounded-tl-2xl" />
+                  <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-primary rounded-tr-2xl" />
+                  <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-primary rounded-bl-2xl" />
+                  <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-primary rounded-br-2xl" />
+                  
+                  {/* Scanning Line Animation */}
+                  {loading && (
+                    <motion.div 
+                      animate={{ top: ['10%', '90%', '10%'] }}
+                      transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                      className="absolute left-0 right-0 h-0.5 bg-primary/60 shadow-[0_0_15px_var(--color-primary)] opacity-50 z-20"
+                    />
+                  )}
+                </div>
+
+                {loading && (
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center text-white">
+                    <div className="relative z-10 text-center space-y-8 p-12">
+                      <div className="w-24 h-24 bg-primary rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl animate-pulse">
+                        <Camera className="w-12 h-12 text-primary-foreground" />
+                      </div>
+                      <div className="space-y-4">
+                        <p className="text-xs font-black uppercase tracking-[0.4em] opacity-80">System Analysing</p>
+                        <AnimatePresence mode="wait">
+                          <motion.p 
+                            key={thinkingStep}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="text-2xl font-black italic tracking-tight"
+                          >
+                            {thinkingSteps[thinkingStep]}
+                          </motion.p>
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
+            ) : (
+              <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/3]">
+                <img src={capturedImage} className="w-full h-full object-cover grayscale-[0.2]" alt="Captured" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <button 
+                  onClick={reset}
+                  className="absolute top-8 right-8 w-14 h-14 glass-dark text-white rounded-2xl flex items-center justify-center hover:bg-black/80 transition-all hover:rotate-90"
+                >
+                  <RefreshCw className="w-7 h-7" />
+                </button>
+              </div>
+            )}
+
+            <div className="p-8 flex flex-col sm:flex-row justify-center gap-4">
+              {!capturedImage && (
+                <>
+                  <Button 
+                    onClick={capture}
+                    disabled={loading}
+                    size="lg"
+                    className="rounded-[2rem] bg-primary text-primary-foreground h-20 px-10 gap-3 group shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)] hover:scale-105 transition-all"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                      <Camera className="w-5 h-5" />
+                    </div>
+                    <span className="font-black uppercase tracking-widest text-[10px]">Capture Object</span>
+                  </Button>
+                  
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                  />
+                  <Button 
+                    onClick={() => fileInputRef.current?.click()}
+                    variant="outline"
+                    size="lg"
+                    className="rounded-[2.5rem] h-24 w-24 flex items-center justify-center border-2 hover:bg-muted transition-colors"
+                  >
+                    <Upload className="w-7 h-7 text-muted-foreground" />
+                  </Button>
+                </>
+              )}
             </div>
-          </Card>
-        </motion.div>
+          </div>
+        </div>
 
-        {/* Result Section */}
-        <AnimatePresence>
-          {result && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="w-full"
-            >
-              <Card className="border-none shadow-2xl bg-card rounded-[2.5rem] border border-border overflow-hidden flex flex-col h-full">
-                <CardHeader className="pt-8 px-8 pb-3">
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2.5 h-2.5 rounded-full ${
-                        result.kategori === 'Organik' ? 'bg-[#4ade80]' : 
-                        result.kategori === 'Anorganik' ? 'bg-[#facc15]' : 
-                        result.kategori === 'B3' ? 'bg-[#f87171]' : 'bg-[#94a3b8]'
-                      }`} />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                        {result.kategori}
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="icon" variant="outline" onClick={toggleVoice} className={`w-9 h-9 rounded-full ${isSpeaking ? 'bg-primary text-primary-foreground animate-pulse' : 'hover:bg-muted'}`}>
-                        {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                      </Button>
-                      <Button size="icon" variant="outline" onClick={downloadImage} className="w-9 h-9 rounded-full hover:bg-muted"><Download className="w-4 h-4" /></Button>
-                      <Button size="icon" variant="outline" onClick={() => window.print()} className="w-9 h-9 rounded-full hover:bg-muted"><FileText className="w-4 h-4" /></Button>
-                    </div>
-                  </div>
-                  <CardTitle className="text-4xl font-black tracking-tighter text-foreground leading-tight">
-                    {result.item}
-                  </CardTitle>
-                </CardHeader>
-                
-                <CardContent className="px-8 pb-10 space-y-6 flex-grow flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Analisis AI</p>
-                    <p className="text-[14px] text-muted-foreground leading-relaxed font-medium">
-                      {result.penjelasan}
-                    </p>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4 items-stretch pt-6 border-t border-border">
-                    <div className="p-5 rounded-3xl bg-muted/20 border border-border flex flex-col justify-center">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Tips Cepat</p>
-                      <p className="text-[13px] text-muted-foreground leading-relaxed font-bold italic">"{result.tips}"</p>
-                    </div>
-                    
-                    <div className="p-5 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col items-center justify-center text-center">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 shadow-lg ${
-                        result.kategori === 'Organik' ? 'bg-[#4ade80]' : 
-                        result.kategori === 'Anorganik' ? 'bg-[#facc15]' : 
-                        result.kategori === 'B3' ? 'bg-[#f87171]' : 'bg-[#94a3b8]'
-                      }`}>
-                        <Recycle className="text-white w-7 h-7" />
+        {/* Results Section */}
+        <div className="order-1 lg:order-2">
+          <AnimatePresence mode="wait">
+            {result ? (
+              <motion.div
+                key="result"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <div className="bg-card border border-border rounded-[4rem] p-10 space-y-10 shadow-2xl">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${
+                          result.kategori === 'Organik' ? 'bg-emerald-500' :
+                          result.kategori === 'Anorganik' ? 'bg-amber-500' :
+                          result.kategori === 'B3' ? 'bg-rose-500' : 'bg-slate-500'
+                        }`} />
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-80 text-primary">Result Category</span>
                       </div>
-                      <p className="text-[10px] font-black uppercase text-muted-foreground mb-0.5">Wadah</p>
-                      <p className="text-[14px] font-black text-foreground leading-tight">Tong {result.warna_tong}</p>
+                      <h3 className="text-5xl font-black tracking-tighter">{result.item}</h3>
+                    </div>
+                    <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center text-white shadow-2xl ${
+                      result.warna_tong === 'Hijau' ? 'bg-emerald-500 shadow-emerald-500/20' :
+                      result.warna_tong === 'Kuning' ? 'bg-amber-500 shadow-amber-500/20' :
+                      result.warna_tong === 'Merah' ? 'bg-rose-500 shadow-rose-500/20' : 'bg-slate-500 shadow-slate-500/20'
+                    }`}>
+                      <Trash2 className="w-10 h-10" />
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+                  <div className="space-y-4">
+                    <div className="p-8 bg-muted/30 rounded-[3rem] border border-border/50">
+                      <p className="text-xl font-bold leading-relaxed italic text-balance">
+                        "{result.penjelasan}"
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-6 rounded-[2rem] bg-primary text-primary-foreground space-y-1">
+                      <p className="text-[8px] font-black uppercase tracking-widest opacity-80">Disposal</p>
+                      <p className="text-lg font-black tracking-tight">{result.warna_tong} Bin</p>
+                    </div>
+                    <div className="p-6 rounded-[2rem] bg-muted/50 border border-border space-y-1 text-center">
+                      <p className="text-[8px] font-black uppercase tracking-widest opacity-80">Type</p>
+                      <p className="text-lg font-black tracking-tight">{result.kategori}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="glass dark:glass-dark rounded-[4rem] p-10 space-y-8">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-primary">
+                      <Lightbulb className="w-5 h-5" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Expert Guidance</span>
+                    </div>
+                    <p className="text-2xl font-bold leading-snug tracking-tight">{result.tips}</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4">
+                    <button 
+                      onClick={toggleVoice}
+                      className="flex-grow flex items-center justify-center gap-3 py-4 bg-primary text-primary-foreground rounded-2xl hover:scale-[1.02] active:scale-95 transition-all font-black text-[10px] uppercase tracking-widest"
+                    >
+                      {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                      {isSpeaking ? "Stop Voice" : "Listen Advice"}
+                    </button>
+                    <button 
+                      onClick={downloadImage}
+                      className="w-16 h-16 bg-muted hover:bg-border transition-colors rounded-2xl flex items-center justify-center"
+                    >
+                      <Download className="w-6 h-6" />
+                    </button>
+                    <button 
+                      onClick={reset}
+                      className="w-16 h-16 bg-muted hover:bg-border transition-colors rounded-2xl flex items-center justify-center"
+                    >
+                      <RefreshCw className="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="h-full flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-border rounded-[4rem] space-y-6"
+              >
+                <div className="w-24 h-24 bg-muted rounded-[2.5rem] flex items-center justify-center text-muted-foreground/30">
+                  <Camera className="w-12 h-12" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-2xl font-black tracking-tighter">Waiting for Data</p>
+                  <p className="text-muted-foreground font-medium">Lakukan scan objek untuk melihat analisis mendalam.</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
-      {/* Error Alert */}
+      {/* Error State */}
       <AnimatePresence>
         {error && (
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-8">
-            <Alert variant="destructive" className="rounded-[2rem] bg-card border-2 border-[#f87171] shadow-xl">
-              <AlertCircle className="h-5 w-5" />
-              <AlertTitle className="font-black uppercase tracking-widest text-xs">System Error</AlertTitle>
-              <AlertDescription className="text-sm font-medium">{error}</AlertDescription>
-              <Button variant="ghost" size="sm" onClick={reset} className="mt-4 h-8 px-4 rounded-full bg-[#f87171] text-white">Reset</Button>
-            </Alert>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[60] w-full max-w-lg px-6">
+            <div className="bg-rose-500 text-white p-6 rounded-3xl shadow-2xl flex items-center gap-4">
+              <AlertCircle className="w-8 h-8 shrink-0" />
+              <div className="flex-grow">
+                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-0.5">System Alert</p>
+                <p className="text-sm font-bold leading-tight">{error}</p>
+              </div>
+              <button onClick={reset} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                <RefreshCw className="w-5 h-5" />
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -40,7 +40,7 @@ const Education = () => {
       <div className="text-center mb-20 space-y-4">
         <h2 className="text-5xl lg:text-6xl font-black tracking-tighter">Waste Education</h2>
         <div className="w-16 h-2 bg-primary mx-auto rounded-full" />
-        <p className="text-muted-foreground font-medium">Kenali jenis sampahmu untuk bumi yang lebih baik.</p>
+        <p className="text-muted-foreground dark:text-foreground/60 font-medium">Kenali jenis sampahmu untuk bumi yang lebih baik.</p>
       </div>
       
       <div className="grid md:grid-cols-3 gap-10">
@@ -53,11 +53,11 @@ const Education = () => {
               <cat.icon className={`w-8 h-8 ${cat.color}`} />
             </div>
             <CardTitle className="mb-6 text-3xl font-black tracking-tight">{cat.title}</CardTitle>
-            <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-grow font-medium">
+            <p className="text-muted-foreground dark:text-foreground/70 text-sm leading-relaxed mb-8 flex-grow font-medium">
               {cat.desc}
             </p>
             <div className="bg-muted p-5 rounded-2xl border border-border">
-              <p className="text-[10px] font-black uppercase tracking-widest mb-3 opacity-60">Benda Umum:</p>
+              <p className="text-[10px] font-black uppercase tracking-widest mb-3 opacity-80 text-primary">Benda Umum:</p>
               <p className="text-xs font-bold leading-relaxed">{cat.examples}</p>
             </div>
           </Card>

@@ -16,7 +16,11 @@ import Locations from './pages/Locations'
 
 function App() {
   const [history, setHistory] = useState<any[]>([])
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem('theme')
+    if (saved) return saved === 'dark'
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+  })
   const location = useLocation()
 
   // Auto Scroll to Top on route change
@@ -26,8 +30,13 @@ function App() {
 
   // Toggle Dark Mode
   useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark')
-    else document.documentElement.classList.remove('dark')
+    if (isDark) {
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+    }
   }, [isDark])
 
   // Load history from localStorage on mount
