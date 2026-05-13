@@ -83,7 +83,8 @@ const Impact = ({ history, stats }: ImpactProps) => {
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${
                       item.kategori === 'Organik' ? 'bg-emerald-500/10 text-emerald-600' : 
                       item.kategori === 'Anorganik' ? 'bg-amber-500/10 text-amber-600' : 
-                      'bg-rose-500/10 text-rose-600'
+                      item.kategori === 'B3' ? 'bg-rose-500/10 text-rose-600' :
+                      'bg-slate-500/10 text-slate-600'
                     }`}>
                       <Recycle className="w-7 h-7" />
                     </div>

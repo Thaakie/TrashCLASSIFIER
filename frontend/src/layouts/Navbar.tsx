@@ -12,6 +12,7 @@ const Navbar = ({ isDark, setIsDark }: NavbarProps) => {
   const navLinks = [
     { to: '/', label: 'Home' },
     { to: '/education', label: 'Education' },
+    { to: '/locations', label: 'Locations' },
     { to: '/about', label: 'About' },
     { to: '/impact', label: 'Impact' },
   ]

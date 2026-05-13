@@ -129,7 +129,8 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                     <div className="flex items-center gap-2">
                       <div className={`w-2.5 h-2.5 rounded-full ${
                         result.kategori === 'Organik' ? 'bg-[#4ade80]' : 
-                        result.kategori === 'Anorganik' ? 'bg-[#facc15]' : 'bg-[#f87171]'
+                        result.kategori === 'Anorganik' ? 'bg-[#facc15]' : 
+                        result.kategori === 'B3' ? 'bg-[#f87171]' : 'bg-[#94a3b8]'
                       }`} />
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                         {result.kategori}
@@ -165,7 +166,8 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                     <div className="p-5 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col items-center justify-center text-center">
                       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 shadow-lg ${
                         result.kategori === 'Organik' ? 'bg-[#4ade80]' : 
-                        result.kategori === 'Anorganik' ? 'bg-[#facc15]' : 'bg-[#f87171]'
+                        result.kategori === 'Anorganik' ? 'bg-[#facc15]' : 
+                        result.kategori === 'B3' ? 'bg-[#f87171]' : 'bg-[#94a3b8]'
                       }`}>
                         <Recycle className="text-white w-7 h-7" />
                       </div>

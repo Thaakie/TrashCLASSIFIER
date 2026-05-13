@@ -12,6 +12,7 @@ import Education from './pages/Education'
 import About from './pages/About'
 import Impact from './pages/Impact'
 import Scanner from './pages/Scanner'
+import Locations from './pages/Locations'
 
 function App() {
   const [history, setHistory] = useState<any[]>([])
@@ -59,6 +60,7 @@ function App() {
             <Route path="/education" element={<Education />} />
             <Route path="/about" element={<About />} />
             <Route path="/impact" element={<Impact history={history} stats={stats} />} />
+            <Route path="/locations" element={<Locations />} />
             <Route path="/scanner" element={<Scanner addToHistory={addToHistory} />} />
           </Routes>
         </AnimatePresence>

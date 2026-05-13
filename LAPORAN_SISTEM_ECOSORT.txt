@@ -8,58 +8,60 @@
 EcoSort V3 adalah aplikasi berbasis web yang dirancang untuk membantu 
 masyarakat Indonesia dalam mengklasifikasikan sampah secara otomatis 
 menggunakan teknologi Computer Vision dan Kecerdasan Buatan (AI). 
-Sistem ini fokus pada tiga kategori utama standar lingkungan: 
-Organik, Anorganik, dan Bahan Berbahaya dan Beracun (Limbah B3).
+Sistem ini menggunakan arsitektur modular untuk performa dan skalabilitas tinggi.
 
 2. TEKNOLOGI YANG DIGUNAKAN (TECH STACK)
 ----------------------------------------
-- Frontend: React.js (Vite), Tailwind CSS, Framer Motion (Animations).
-- Backend: Node.js, Express.js.
-- AI Engine: Google Gemini 3 Flash Preview (Thinking Mode Enabled).
-- API Communication: Axios (Direct REST API Call).
+- Frontend: React.js (Vite), Tailwind CSS, Framer Motion, React Router (Navigation).
+- Backend: Node.js, Express.js (Modular Router & Controller).
+- AI Engine: Google Gemini 3.1 Flash Lite (High Efficiency).
+- AI SDK: Official Google Generative AI SDK (@google/generative-ai).
 - Icons: Lucide React.
-- UI Components: Shadcn UI.
+- UI Components: Shadcn UI (Radix UI).
 
-3. FITUR UTAMA SISTEM
----------------------
-a. Smart Scanning: Deteksi material sampah melalui kamera secara real-time.
-b. AI Reasoning: Kemampuan AI untuk "berpikir" dan memberikan alasan logis
-   mengapa suatu benda masuk ke kategori tertentu.
-c. Waste Education: Modul edukasi mengenai jenis sampah (Organik, Anorganik, B3)
-   lengkap dengan contoh benda dan cara penanganannya.
-d. Persistent History: Riwayat pemindaian disimpan di penyimpanan lokal 
-   (Local Storage) sehingga data tidak hilang saat refresh.
-e. Responsive UI: Layout adaptif (Split Screen) untuk kenyamanan pengguna
-   di berbagai perangkat.
+3. ARSITEKTUR SISTEM (MODULAR DESIGN)
+-------------------------------------
+Sistem telah direfaktorisasi menjadi struktur modular:
 
-4. ALUR KERJA TEKNIS (WORKFLOW)
--------------------------------
-1. Image Capture: User mengambil foto via React-Webcam. Foto dikompresi 
-   dan dikonversi ke Base64 (JPEG, 0.8 Quality).
-2. API Request: Backend menerima Base64 dan mengirimkan POST Request 
-   langsung ke endpoint Gemini 1.5/3 Flash v1beta.
-3. Thinking Config: Request menyertakan 'thinkingLevel: HIGH' dan 
-   'responseSchema' untuk menjamin output JSON yang akurat.
-4. Data Cleaning: Backend menggunakan Regular Expression (Regex) untuk 
-   mengekstrak data JSON dari respon mentah AI yang berisi narasi pemikiran.
-5. Output: Hasil klasifikasi (Nama benda, kategori, tips, dan warna tong) 
-   ditampilkan secara dinamis di UI.
+A. Frontend Architecture:
+   - src/pages/: Komponen halaman terpisah (Home, Scanner, Impact, Education).
+   - src/layouts/: Komponen navigasi global (Navbar, Footer).
+   - src/hooks/: Custom hooks untuk logika (useTrashScanner).
+   - React Router: Implementasi navigasi berbasis URL (SPA).
 
-5. STANDAR KLASIFIKASI (OUTPUT)
--------------------------------
-- HIJAU (Organik)    : Sisa hayati (makanan, daun). Pengolahan: Kompos.
-- KUNING (Anorganik) : Plastik, Logam, Kaca. Pengolahan: Daur Ulang.
-- MERAH (Limbah B3)  : Baterai, Elektronik, Kimia. Pengolahan: Penanganan Khusus.
+B. Backend Architecture:
+   - src/routes/: Pemisahan endpoint API (/api/classify).
+   - src/controllers/: Logika bisnis dan pemrosesan gambar terisolasi.
+   - src/config/: Konfigurasi pusat untuk AI Engine dan JSON Schema.
 
-6. KESIMPULAN
--------------
-Sistem ini berhasil mengintegrasikan kecepatan model Flash dengan 
-kedalaman penalaran model Pro melalui fitur 'Thinking Mode', 
-menjadikannya alat yang sangat efektif untuk edukasi pengelolaan 
-sampah di Indonesia.
+4. FITUR UTAMA & PENINGKATAN
+----------------------------
+a. Smart Scanning: Deteksi real-time dengan kamera atau galeri foto.
+b. Side-by-Side Dashboard: Visualisasi statistik dampak lingkungan (CO2 Saved, Points).
+c. Daily Eco-Tips: Pesan edukasi harian dinamis untuk meningkatkan engagement.
+d. Retry Mechanism: Logika percobaan ulang otomatis jika terjadi limit kuota API.
+e. Gallery Upload: Dukungan pemrosesan file gambar dari penyimpanan lokal.
+f. Dark Mode Support: Interface adaptif untuk kenyamanan visual.
+
+5. ALUR KERJA TEKNIS (WORKFLOW V3)
+----------------------------------
+1. Input: User mengambil foto via webcam atau mengunggah dari galeri.
+2. Processing: Data dikonversi ke Base64 dan dikirim ke backend modular.
+3. AI Analysis: Backend menggunakan SDK resmi Gemini untuk analisis gambar 
+   dengan instruksi sistem ahli lingkungan Indonesia.
+4. Response Format: Output dijamin dalam format JSON terstruktur untuk 
+   menghindari error parsing.
+5. Storage: Hasil scan otomatis tersimpan di Local Storage dan diumpankan 
+   ke dashboard Impact.
+
+6. STATUS PENANGANAN QUOTA
+--------------------------
+Untuk mengatasi limitasi kuota API (Error 429), sistem saat ini menggunakan:
+- Model: Gemini 3.1 Flash Lite (Kuota RPD lebih besar: 500/hari).
+- Logic: Automatic exponential backoff (Retry per 10 detik).
 
 ==========================================================================
-Status Proyek: Selesai & Teruji
+Status Proyek: Selesai & Teroptimasi
 Engine: Antigravity AI
 Tanggal Laporan: 13 Mei 2026
 ==========================================================================

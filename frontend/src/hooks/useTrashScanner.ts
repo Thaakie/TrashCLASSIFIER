@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, type ChangeEvent } from 'react'
 import Webcam from 'react-webcam'
 import axios from 'axios'
 
@@ -6,7 +6,7 @@ interface ApiResponse {
   status: string
   data: {
     item: string
-    kategori: 'Organik' | 'Anorganik' | 'B3'
+    kategori: 'Organik' | 'Anorganik' | 'B3' | 'Bukan Sampah'
     penjelasan: string
     tips: string
     warna_tong: string
@@ -14,7 +14,7 @@ interface ApiResponse {
   message?: string
 }
 
-export const useTrashScanner = (onResultSaved?: (item: any) => void) => {
+export const useTrashScanner = (onResultSaved?: (data: ApiResponse['data']) => void) => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<ApiResponse['data'] | null>(null)
@@ -41,7 +41,7 @@ export const useTrashScanner = (onResultSaved?: (item: any) => void) => {
       }, 1500)
     }
     return () => clearInterval(interval)
-  }, [loading])
+  }, [loading, thinkingSteps.length])
 
   const classifyTrash = async (image: string) => {
     setLoading(true)
@@ -70,8 +70,7 @@ export const useTrashScanner = (onResultSaved?: (item: any) => void) => {
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot({
       width: 720,
-      height: 960,
-      quality: 0.8
+      height: 960
     })
     
     if (imageSrc) {
@@ -80,7 +79,7 @@ export const useTrashScanner = (onResultSaved?: (item: any) => void) => {
     }
   }, [webcamRef])
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
