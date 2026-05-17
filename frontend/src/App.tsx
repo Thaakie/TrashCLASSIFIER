@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
+import Chatbot from './components/Chatbot'
+import FloatingChatIcon from './components/FloatingChatIcon'
 
 // Layouts
 import Navbar from './layouts/Navbar'
@@ -16,6 +18,8 @@ import Locations from './pages/Locations'
 
 function App() {
   const [history, setHistory] = useState<any[]>([])
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [hasUnread, setHasUnread] = useState(false)
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme')
     if (saved) return saved === 'dark'
@@ -74,6 +78,24 @@ function App() {
           </Routes>
         </AnimatePresence>
       </main>
+
+      <>
+        <Chatbot
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          onAssistantReply={() => {
+            if (!isChatOpen) setHasUnread(true)
+          }}
+        />
+        <FloatingChatIcon
+          onClick={() => {
+            setIsChatOpen((prev) => !prev)
+            setHasUnread(false)
+          }}
+          hasUnread={hasUnread && !isChatOpen}
+          isOpen={isChatOpen}
+        />
+      </>
 
       <Footer />
     </div>

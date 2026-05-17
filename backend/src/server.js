@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import classifyRoutes from './routes/classifyRoutes.js';
+import chatbotRoutes from './routes/chatbotRoutes.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -25,6 +26,7 @@ app.use(express.static(frontendPath));
 
 // Routes
 app.use('/api', classifyRoutes);
+app.use('/api', chatbotRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

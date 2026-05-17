@@ -29,13 +29,13 @@ export const GEMINI_RESPONSE_SCHEMA = {
     kategori: { type: "string", enum: ["Organik", "Anorganik", "B3", "Bukan Sampah"] },
     penjelasan: { type: "string" },
     tips: { type: "string" },
-    warna_tong: { type: "string", enum: ["Hijau", "Kuning", "Merah", "Abu-abu"] }
+    warna_tong: { type: "string", enum: ["Hijau", "Kuning", "Merah", "Abu-abu"] },
   },
-  required: ["item", "kategori", "penjelasan", "tips", "warna_tong"]
+  required: ["item", "kategori", "penjelasan", "tips", "warna_tong"],
 };
 
 export const GENERATION_CONFIG = {
-  temperature: 0.1, // Lower temperature for more consistent classification
+  temperature: 0.1,
   responseMimeType: "application/json",
-  responseSchema: GEMINI_RESPONSE_SCHEMA
+  responseSchema: GEMINI_RESPONSE_SCHEMA,
 };
