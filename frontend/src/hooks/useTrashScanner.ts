@@ -25,6 +25,7 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
 
   const webcamRef = useRef<Webcam>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const voicesRef = useRef<SpeechSynthesisVoice[] | null>(null);
 
   const thinkingSteps = ["Menganalisis tekstur objek...", "Mendeteksi material penyusun...", "Konsultasi standar lingkungan IDN...", "Mengevaluasi tingkat daur ulang...", "Menyusun tips pengelolaan..."];
 
@@ -37,6 +38,34 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
     }
     return () => clearInterval(interval);
   }, [loading, thinkingSteps.length]);
+
+  // Preload available speechSynthesis voices. Some mobile browsers populate
+  // voices asynchronously; listen to `voiceschanged` and cache the list.
+  useEffect(() => {
+    const loadVoices = () => {
+      try {
+        const v = window.speechSynthesis.getVoices();
+        if (v && v.length) voicesRef.current = v;
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    loadVoices();
+    try {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    } catch (e) {
+      // ignore
+    }
+
+    return () => {
+      try {
+        window.speechSynthesis.onvoiceschanged = null as any;
+      } catch (e) {
+        // ignore
+      }
+    };
+  }, []);
 
   const classifyTrash = async (image: string) => {
     setLoading(true);
@@ -96,9 +125,25 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
       const text = `Ini adalah ${result.item}. Kategorinya adalah ${result.kategori}. Tips: ${result.tips}. Gunakan tong sampah ${result.warna_tong}.`;
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "id-ID";
+      // choose a suitable voice if available (prefer Indonesian)
+      const voices = voicesRef.current;
+      if (voices && voices.length) {
+        utterance.voice = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith("id")) || voices[0];
+      }
+      // mobile browsers can be sensitive; set explicit params
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
       utterance.onend = () => setIsSpeaking(false);
-      window.speechSynthesis.speak(utterance);
-      setIsSpeaking(true);
+      // Speak on the same user gesture (this function is called from button click)
+      try {
+        window.speechSynthesis.speak(utterance);
+        setIsSpeaking(true);
+      } catch (e) {
+        // Some browsers may throw if speech cannot start; fail gracefully
+        console.warn("speechSynthesis.speak failed", e);
+        setIsSpeaking(false);
+      }
     }
   };
 

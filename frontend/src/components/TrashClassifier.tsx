@@ -49,7 +49,7 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
         <div className="space-y-1">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full border border-primary/20">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-widest">Neural Scanner v2</span>
+            <span className="text-[9px] font-black uppercase tracking-widest">Neural Scanner</span>
           </motion.div>
           <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
             EcoSort <span className="text-primary italic">Intelligence.</span>
@@ -119,7 +119,7 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                     </div>
                     <div className={`px-6 py-4 rounded-2xl flex flex-col items-center justify-center text-white text-center shadow-lg ${getBinStyles(result.warna_tong).badge}`}>
                       <Trash2 className="w-6 h-6" style={{ display: "inline-block", transform: "translateY(-3px)" }} />
-                      <span className="text-[8px] font-black uppercase" style={{ display: "inline-block", transform: "translateY(-3px)" }}>
+                      <span className="text-center text-[8px] font-black uppercase" style={{ display: "inline-block", transform: "translateY(-3px)" }}>
                         {result.warna_tong} Bin
                       </span>
                     </div>
