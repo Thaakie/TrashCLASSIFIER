@@ -1,143 +1,164 @@
-import { useState, useRef, useCallback, useEffect, type ChangeEvent } from 'react'
-import Webcam from 'react-webcam'
-import axios from 'axios'
+import { useState, useRef, useCallback, useEffect, type ChangeEvent } from "react";
+import Webcam from "react-webcam";
+import axios from "axios";
+import html2canvas from "html2canvas";
 
 interface ApiResponse {
-  status: string
+  status: string;
   data: {
-    item: string
-    kategori: 'Organik' | 'Anorganik' | 'B3' | 'Bukan Sampah'
-    penjelasan: string
-    tips: string
-    warna_tong: string
-  }
-  message?: string
+    item: string;
+    kategori: "Organik" | "Anorganik" | "B3" | "Bukan Sampah";
+    penjelasan: string;
+    tips: string;
+    warna_tong: string;
+  };
+  message?: string;
 }
 
-export const useTrashScanner = (onResultSaved?: (data: ApiResponse['data']) => void) => {
-  const [capturedImage, setCapturedImage] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<ApiResponse['data'] | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [thinkingStep, setThinkingStep] = useState(0)
-  const [isSpeaking, setIsSpeaking] = useState(false)
-  
-  const webcamRef = useRef<Webcam>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => void) => {
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<ApiResponse["data"] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [thinkingStep, setThinkingStep] = useState(0);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const thinkingSteps = [
-    "Menganalisis tekstur objek...",
-    "Mendeteksi material penyusun...",
-    "Konsultasi standar lingkungan IDN...",
-    "Mengevaluasi tingkat daur ulang...",
-    "Menyusun tips pengelolaan..."
-  ]
+  const webcamRef = useRef<Webcam>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const thinkingSteps = ["Menganalisis tekstur objek...", "Mendeteksi material penyusun...", "Konsultasi standar lingkungan IDN...", "Mengevaluasi tingkat daur ulang...", "Menyusun tips pengelolaan..."];
 
   useEffect(() => {
-    let interval: any
+    let interval: any;
     if (loading) {
       interval = setInterval(() => {
-        setThinkingStep((prev) => (prev + 1) % thinkingSteps.length)
-      }, 1500)
+        setThinkingStep((prev) => (prev + 1) % thinkingSteps.length);
+      }, 1500);
     }
-    return () => clearInterval(interval)
-  }, [loading, thinkingSteps.length])
+    return () => clearInterval(interval);
+  }, [loading, thinkingSteps.length]);
 
   const classifyTrash = async (image: string) => {
-    setLoading(true)
-    setError(null)
-    setResult(null)
-    
-    try {
-      const response = await axios.post<ApiResponse>('/api/classify', {
-        imageBase64: image
-      })
+    setLoading(true);
+    setError(null);
+    setResult(null);
 
-      if (response.data.status === 'success' && response.data.data) {
-        const data = response.data.data
-        setResult(data)
-        if (onResultSaved) onResultSaved(data)
+    try {
+      const response = await axios.post<ApiResponse>("/api/classify", {
+        imageBase64: image,
+      });
+
+      if (response.data.status === "success" && response.data.data) {
+        const data = response.data.data;
+        setResult(data);
+        if (onResultSaved) onResultSaved(data);
       } else {
-        setError(response.data.message || 'Gagal klasifikasi')
+        setError(response.data.message || "Gagal klasifikasi");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Server tidak merespon. Pastikan backend aktif.')
+      setError(err.response?.data?.message || "Server tidak merespon. Pastikan backend aktif.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot({
       width: 720,
-      height: 960
-    })
-    
+      height: 960,
+    });
+
     if (imageSrc) {
-      setCapturedImage(imageSrc)
-      classifyTrash(imageSrc)
+      setCapturedImage(imageSrc);
+      classifyTrash(imageSrc);
     }
-  }, [webcamRef])
+  }, [webcamRef]);
 
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result as string
-        setCapturedImage(base64String)
-        classifyTrash(base64String)
-      }
-      reader.readAsDataURL(file)
+        const base64String = reader.result as string;
+        setCapturedImage(base64String);
+        classifyTrash(base64String);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const toggleVoice = () => {
     if (isSpeaking) {
-      window.speechSynthesis.cancel()
-      setIsSpeaking(false)
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
     } else {
-      if (!result) return
-      const text = `Ini adalah ${result.item}. Kategorinya adalah ${result.kategori}. Tips: ${result.tips}. Gunakan tong sampah ${result.warna_tong}.`
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = 'id-ID'
-      utterance.onend = () => setIsSpeaking(false)
-      window.speechSynthesis.speak(utterance)
-      setIsSpeaking(true)
+      if (!result) return;
+      const text = `Ini adalah ${result.item}. Kategorinya adalah ${result.kategori}. Tips: ${result.tips}. Gunakan tong sampah ${result.warna_tong}.`;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "id-ID";
+      utterance.onend = () => setIsSpeaking(false);
+      window.speechSynthesis.speak(utterance);
+      setIsSpeaking(true);
     }
-  }
+  };
 
-  const downloadImage = () => {
-    if (!result) return
-    const canvas = document.createElement('canvas')
-    canvas.width = 800
-    canvas.height = 600
-    const ctx = canvas.getContext('2d')
-    if (ctx) {
-      ctx.fillStyle = '#FAF0E6'
-      ctx.fillRect(0, 0, 800, 600)
-      ctx.fillStyle = '#352F44'
-      ctx.font = 'bold 40px Outfit'
-      ctx.fillText(`EcoSort Analysis: ${result.item}`, 50, 80)
-      ctx.font = '30px Outfit'
-      ctx.fillText(`Kategori: ${result.kategori}`, 50, 140)
-      ctx.font = '20px Outfit'
-      ctx.fillText(`Tips: ${result.tips}`, 50, 200)
-      
-      const link = document.createElement('a')
-      link.download = `EcoSort-${result.item}.png`
-      link.href = canvas.toDataURL()
-      link.click()
+  const downloadImage = async (exportNode?: HTMLElement | null) => {
+    if (!result || !exportNode) return;
+    // Some browsers / html2canvas behave inconsistently if the node is hidden/offscreen.
+    // Temporarily force the export node to be visible and centered in the viewport
+    // so the canvas rendering matches the intended layout, then restore styles.
+    const prevStyle = {
+      position: exportNode.style.position || "",
+      left: exportNode.style.left || "",
+      top: exportNode.style.top || "",
+      transform: exportNode.style.transform || "",
+      opacity: exportNode.style.opacity || "",
+      visibility: exportNode.style.visibility || "",
+      zIndex: exportNode.style.zIndex || "",
+      pointerEvents: exportNode.style.pointerEvents || "",
+    };
+
+    try {
+      exportNode.style.position = "fixed";
+      exportNode.style.left = "50%";
+      exportNode.style.top = "50%";
+      exportNode.style.transform = "translate(-50%, -50%)";
+      exportNode.style.opacity = "1";
+      exportNode.style.visibility = "visible";
+      exportNode.style.zIndex = "99999";
+      exportNode.style.pointerEvents = "none";
+
+      const canvas = await html2canvas(exportNode, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+
+      const link = document.createElement("a");
+      link.download = `EcoSort-${result.item}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } finally {
+      // restore previous inline styles
+      exportNode.style.position = prevStyle.position;
+      exportNode.style.left = prevStyle.left;
+      exportNode.style.top = prevStyle.top;
+      exportNode.style.transform = prevStyle.transform;
+      exportNode.style.opacity = prevStyle.opacity;
+      exportNode.style.visibility = prevStyle.visibility;
+      exportNode.style.zIndex = prevStyle.zIndex;
+      exportNode.style.pointerEvents = prevStyle.pointerEvents;
     }
-  }
+  };
 
   const reset = () => {
-    setCapturedImage(null)
-    setResult(null)
-    setError(null)
-    window.speechSynthesis.cancel()
-    setIsSpeaking(false)
-  }
+    setCapturedImage(null);
+    setResult(null);
+    setError(null);
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
 
   return {
     webcamRef,
@@ -153,6 +174,6 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse['data']) => v
     handleFileUpload,
     toggleVoice,
     downloadImage,
-    reset
-  }
-}
+    reset,
+  };
+};
