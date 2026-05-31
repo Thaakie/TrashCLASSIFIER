@@ -95,7 +95,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
             {history.length > 0 && (
               <div className="px-3 py-1.5 glass dark:glass-dark rounded-xl border border-primary/10 flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[8px] font-black uppercase tracking-widest">Active session</span>
+                <span className="text-[8px] font-black uppercase tracking-widest dark:text-black">Active session</span>
               </div>
             )}
           </div>

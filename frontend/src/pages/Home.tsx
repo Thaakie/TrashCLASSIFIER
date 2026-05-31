@@ -73,8 +73,8 @@ const Home = () => {
               
               <div className="absolute bottom-6 left-6 right-6 glass dark:glass-dark p-6 rounded-2xl shadow-xl border border-white/10">
                 <div className="flex justify-between items-center">
-                  <div className="text-foreground">
-                    <p className="text-[9px] font-black uppercase tracking-[0.2em] mb-1 text-primary">Impact Report</p>
+                  <div className="text-foreground dark:text-black">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] mb-1 text-primary dark:text-black">Impact Report</p>
                     <p className="text-2xl font-black tracking-tighter">64M <span className="text-xs font-medium opacity-80">Ton/Thn</span></p>
                   </div>
                   <div className="w-10 h-10 bg-primary text-primary-foreground rounded-xl flex items-center justify-center shadow-lg">

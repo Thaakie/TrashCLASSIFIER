@@ -26,47 +26,47 @@
 }
 
 :root {
-  --background: #FAF9F6;
-  --foreground: #1A1A1A;
-  --card: #FFFFFF;
-  --card-foreground: #1A1A1A;
-  --popover: #FFFFFF;
-  --popover-foreground: #1A1A1A;
-  --primary: #1A1A1A;
-  --primary-foreground: #FFFFFF;
-  --secondary: #F4F4F5;
-  --secondary-foreground: #18181B;
-  --muted: #F0F0F0;
+  --background: #faf9f6;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f0f0f0;
   --muted-foreground: #737373;
-  --accent: #F4F4F5;
-  --accent-foreground: #18181B;
-  --destructive: #EF4444;
-  --destructive-foreground: #FAFAFA;
-  --border: #E5E5E5;
-  --input: #E5E5E5;
-  --ring: #1A1A1A;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #1a1a1a;
 }
 
 .dark {
-  --background: #090C0B; /* Deep Forest Black */
-  --foreground: #CBD5E1; /* Muted Slate White - much softer on eyes */
-  --card: #111614;      /* Slightly lighter forest shade */
-  --card-foreground: #CBD5E1;
-  --popover: #111614;
-  --popover-foreground: #CBD5E1;
-  --primary: #10B981;    /* Emerald Green - Eco themed */
-  --primary-foreground: #090C0B;
-  --secondary: #1E293B;
-  --secondary-foreground: #CBD5E1;
-  --muted: #151D1A;
-  --muted-foreground: #64748B;
-  --accent: #151D1A;
-  --accent-foreground: #CBD5E1;
-  --destructive: #EF4444;
-  --destructive-foreground: #F1F5F9;
-  --border: #1E2926;
-  --input: #1E2926;
-  --ring: #10B981;
+  --background: #1b1d19;
+  --foreground: #dddcd5;
+  --card: #222520;
+  --card-foreground: #dddcd5;
+  --popover: #222520;
+  --popover-foreground: #dddcd5;
+  --primary: #d7d9d2;
+  --primary-foreground: #1b1d19;
+  --secondary: #2a2d27;
+  --secondary-foreground: #d0d1ca;
+  --muted: #252822;
+  --muted-foreground: #9a9d93;
+  --accent: #252822;
+  --accent-foreground: #dddcd5;
+  --destructive: #ef4444;
+  --destructive-foreground: #f8fafc;
+  --border: #353a31;
+  --input: #353a31;
+  --ring: #7a8074;
 }
 
 @layer base {
@@ -83,6 +83,6 @@
     @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
   }
   .glass-dark {
-    @apply backdrop-blur-3xl bg-[#020202]/98 border border-white/5 shadow-2xl;
+    @apply backdrop-blur-3xl bg-[#1f211d]/92 border border-white/10 shadow-2xl;
   }
 }

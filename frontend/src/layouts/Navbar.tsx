@@ -30,7 +30,7 @@ const Navbar = ({ isDark, setIsDark }: NavbarProps) => {
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           
-          <Link to="/" className="flex items-center gap-2.5 font-black text-xl tracking-tighter group">
+          <Link to="/" className="flex items-center gap-2.5 font-black text-xl tracking-tighter group dark:text-black">
             <div className="w-9 h-9 bg-primary text-primary-foreground rounded-xl flex items-center justify-center transition-transform group-hover:rotate-12">
               <Recycle className="w-5 h-5" />
             </div>
@@ -38,13 +38,13 @@ const Navbar = ({ isDark, setIsDark }: NavbarProps) => {
           </Link>
         </div>
 
-        <div className="hidden md:flex gap-8 text-[11px] font-black uppercase tracking-widest text-muted-foreground dark:text-foreground/70">
+        <div className="hidden md:flex gap-8 text-[11px] font-black uppercase tracking-widest text-muted-foreground dark:text-black/80">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               className={({ isActive }) => 
-                `hover:text-primary transition-all relative py-1 ${isActive ? 'text-primary' : ''}`
+                `hover:text-primary dark:hover:text-black transition-all relative py-1 ${isActive ? 'text-primary dark:text-black' : ''}`
               }
             >
               {({ isActive }) => (
