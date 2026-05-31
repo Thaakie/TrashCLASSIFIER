@@ -1,50 +1,49 @@
 import Webcam from "react-webcam";
-import { useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
 import { Camera, RefreshCw, AlertCircle, Volume2, VolumeX, Download, Lightbulb, Trash2, Upload, Zap } from "lucide-react";
 import { useTrashScanner } from "../hooks/useTrashScanner";
+import { exportReportToPdf } from "../features/export/exportPdf";
 
 interface TrashClassifierProps {
   onResultSaved?: (item: any) => void;
 }
 
 const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
-  const exportRef = useRef<HTMLDivElement>(null);
-  const { webcamRef, fileInputRef, capturedImage, loading, result, error, thinkingStep, thinkingSteps, isSpeaking, capture, handleFileUpload, toggleVoice, downloadImage, reset } = useTrashScanner(onResultSaved);
+  const { webcamRef, fileInputRef, capturedImage, loading, result, error, thinkingStep, thinkingSteps, isSpeaking, capture, handleFileUpload, toggleVoice, reset } = useTrashScanner(onResultSaved);
 
   const getBinStyles = (warnaTong: string) => {
     if (warnaTong === "Hijau") {
       return {
         bgTint: "bg-emerald-500/5",
         badge: "bg-emerald-500 shadow-emerald-500/20",
-        solid: "#10b981",
       };
     }
     if (warnaTong === "Kuning") {
       return {
         bgTint: "bg-amber-500/5",
         badge: "bg-amber-500 shadow-amber-500/20",
-        solid: "#f59e0b",
       };
     }
     if (warnaTong === "Merah") {
       return {
         bgTint: "bg-rose-500/5",
         badge: "bg-rose-500 shadow-rose-500/20",
-        solid: "#f43f5e",
       };
     }
     return {
       bgTint: "bg-slate-500/5",
       badge: "bg-slate-500 shadow-slate-500/20",
-      solid: "#64748b",
     };
+  };
+
+  const handleExportPdf = async () => {
+    if (!result) return;
+    await exportReportToPdf({ result, capturedImage });
   };
 
   return (
     <div className="max-w-6xl mx-auto py-4 md:py-8 px-4 h-full flex flex-col justify-center min-h-[calc(100vh-100px)]">
-      {/* Compact Header */}
       <div className="flex flex-col md:flex-row justify-between items-end mb-6 gap-4">
         <div className="space-y-1">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full border border-primary/20">
@@ -59,7 +58,6 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 items-stretch">
-        {/* LEFT: Compact Scanner */}
         <div className="w-full lg:w-[380px] shrink-0">
           <div className="relative group h-full">
             <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-700"></div>
@@ -106,7 +104,6 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
           </div>
         </div>
 
-        {/* RIGHT: Unified Compact Results */}
         <div className="flex-grow">
           <AnimatePresence mode="wait">
             {result ? (
@@ -119,9 +116,7 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                     </div>
                     <div className={`px-6 py-4 rounded-2xl flex flex-col items-center justify-center gap-1 text-white text-center shadow-lg ${getBinStyles(result.warna_tong).badge}`}>
                       <Trash2 className="w-6 h-6" />
-                      <span className="text-center text-[8px] leading-none font-black uppercase">
-                        {result.warna_tong} Bin
-                      </span>
+                      <span className="text-center text-[8px] leading-none font-black uppercase">{result.warna_tong} Bin</span>
                     </div>
                   </div>
 
@@ -145,7 +140,7 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                         {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                         {isSpeaking ? "Stop Voice" : "Listen Advice"}
                       </button>
-                      <button onClick={() => downloadImage(exportRef.current)} className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center hover:bg-border active:scale-95 transition-all border border-border/40">
+                      <button onClick={handleExportPdf} className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center hover:bg-border active:scale-95 transition-all border border-border/40">
                         <Download className="w-4 h-4" />
                       </button>
                     </div>
@@ -190,7 +185,6 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
         </div>
       </div>
 
-      {/* Error State */}
       <AnimatePresence>
         {error && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[60] w-full max-w-lg px-6">
@@ -208,95 +202,6 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
         )}
       </AnimatePresence>
 
-      {result && (
-        <div className="fixed -left-[99999px] top-0 pointer-events-none opacity-0">
-          <div
-            ref={exportRef}
-            style={{
-              width: "1200px",
-              minHeight: "1600px",
-              background: "linear-gradient(160deg, #e2e8f0 0%, #f8fafc 45%, #dbeafe 100%)",
-              padding: "72px",
-              color: "#0f172a",
-              fontFamily: '"Segoe UI", Arial, sans-serif',
-            }}
-          >
-            <div style={{ borderRadius: "36px", overflow: "hidden", background: "#ffffff", border: "1px solid #dbe4ee", boxShadow: "0 26px 50px rgba(15,23,42,0.18)" }}>
-              <div style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", color: "#f8fafc", padding: "44px 52px" }}>
-                <p style={{ fontSize: "15px", textTransform: "uppercase", letterSpacing: "0.3em", color: "#cbd5e1", fontWeight: 800, margin: 0 }}>EcoSort Intelligence</p>
-                <h2 style={{ fontSize: "66px", lineHeight: 1.06, fontWeight: 900, marginTop: "16px", marginBottom: "10px" }}>{result.item}</h2>
-                <p style={{ margin: 0, fontSize: "22px", color: "#bfdbfe", fontWeight: 600 }}>Laporan klasifikasi objek berbasis AI</p>
-              </div>
-
-              <div style={{ padding: "48px 52px 52px 52px", display: "flex", flexDirection: "column", gap: "28px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: "22px" }}>
-                  <div style={{ borderRadius: "22px", overflow: "hidden", height: "280px", border: "1px solid #dbe4ee", background: "#e2e8f0" }}>
-                    {capturedImage ? (
-                      <img src={capturedImage} alt="Captured" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b", fontWeight: 700 }}>Tidak ada foto</div>
-                    )}
-                  </div>
-                  <div style={{ borderRadius: "22px", border: "1px solid #dbe4ee", background: "#f8fafc", padding: "28px" }}>
-                    <p style={{ margin: 0, color: "#64748b", fontWeight: 700, fontSize: "20px" }}>Rekomendasi Tong</p>
-                    <p style={{ marginTop: "8px", marginBottom: "20px", fontSize: "48px", lineHeight: 1.1, fontWeight: 900, color: getBinStyles(result.warna_tong).solid }}>{result.warna_tong}</p>
-                    <p style={{ margin: 0, color: "#64748b", fontWeight: 700, fontSize: "20px" }}>Waktu Dibuat</p>
-                    <p style={{ marginTop: "8px", marginBottom: 0, color: "#0f172a", fontSize: "24px", fontWeight: 700 }}>
-                      {new Date().toLocaleString("id-ID", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                  <span style={{ display: "flex", alignItems: "center", height: "70px", fontSize: "32px", fontWeight: 700, color: "#334155", lineHeight: "70px" }}>Kategori</span>
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "70px",
-                      padding: "0 30px",
-                      borderRadius: "999px",
-                      background: getBinStyles(result.warna_tong).solid,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    <span
-                      style={{
-                        margin: 0,
-                        fontSize: "30px",
-                        fontWeight: 900,
-                        color: "#fff",
-                        lineHeight: 1,
-                        textAlign: "center",
-                        display: "block",
-                      }}
-                    >
-                      {result.kategori}
-                    </span>
-                  </div>
-                </div>
-
-                <div style={{ borderRadius: "20px", border: "1px solid #dbe4ee", background: "#f8fafc", padding: "34px" }}>
-                  <p style={{ fontSize: "18px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", color: "#64748b", marginTop: 0, marginBottom: "14px" }}>Ringkasan</p>
-                  <p style={{ fontSize: "40px", lineHeight: 1.42, fontWeight: 600, margin: 0 }}>{result.penjelasan}</p>
-                </div>
-
-                <div style={{ borderRadius: "20px", border: "1px solid #fcd34d", background: "#fffbeb", padding: "34px" }}>
-                  <p style={{ fontSize: "18px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", color: "#a16207", marginTop: 0, marginBottom: "14px" }}>Tips Pengelolaan</p>
-                  <p style={{ fontSize: "40px", lineHeight: 1.42, fontWeight: 600, color: "#78350f", margin: 0 }}>{result.tips}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

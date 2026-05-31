@@ -1,17 +1,11 @@
 import { useState, useRef, useCallback, useEffect, type ChangeEvent } from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
-import html2canvas from "html2canvas";
+import type { ExportResultData } from "../features/export/types";
 
 interface ApiResponse {
   status: string;
-  data: {
-    item: string;
-    kategori: "Organik" | "Anorganik" | "B3" | "Bukan Sampah";
-    penjelasan: string;
-    tips: string;
-    warna_tong: string;
-  };
+  data: ExportResultData;
   message?: string;
 }
 
@@ -173,56 +167,6 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
     }
   };
 
-  const downloadImage = async (exportNode?: HTMLElement | null) => {
-    if (!result || !exportNode) return;
-    // Some browsers / html2canvas behave inconsistently if the node is hidden/offscreen.
-    // Temporarily force the export node to be visible and centered in the viewport
-    // so the canvas rendering matches the intended layout, then restore styles.
-    const prevStyle = {
-      position: exportNode.style.position || "",
-      left: exportNode.style.left || "",
-      top: exportNode.style.top || "",
-      transform: exportNode.style.transform || "",
-      opacity: exportNode.style.opacity || "",
-      visibility: exportNode.style.visibility || "",
-      zIndex: exportNode.style.zIndex || "",
-      pointerEvents: exportNode.style.pointerEvents || "",
-    };
-
-    try {
-      exportNode.style.position = "fixed";
-      exportNode.style.left = "50%";
-      exportNode.style.top = "50%";
-      exportNode.style.transform = "translate(-50%, -50%)";
-      exportNode.style.opacity = "1";
-      exportNode.style.visibility = "visible";
-      exportNode.style.zIndex = "99999";
-      exportNode.style.pointerEvents = "none";
-
-      const canvas = await html2canvas(exportNode, {
-        backgroundColor: null,
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-
-      const link = document.createElement("a");
-      link.download = `EcoSort-${result.item}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    } finally {
-      // restore previous inline styles
-      exportNode.style.position = prevStyle.position;
-      exportNode.style.left = prevStyle.left;
-      exportNode.style.top = prevStyle.top;
-      exportNode.style.transform = prevStyle.transform;
-      exportNode.style.opacity = prevStyle.opacity;
-      exportNode.style.visibility = prevStyle.visibility;
-      exportNode.style.zIndex = prevStyle.zIndex;
-      exportNode.style.pointerEvents = prevStyle.pointerEvents;
-    }
-  };
-
   const reset = () => {
     setCapturedImage(null);
     setResult(null);
@@ -245,7 +189,6 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
     capture,
     handleFileUpload,
     toggleVoice,
-    downloadImage,
     reset,
   };
 };
