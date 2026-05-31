@@ -26,6 +26,7 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
   const webcamRef = useRef<Webcam>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const voicesRef = useRef<SpeechSynthesisVoice[] | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const thinkingSteps = ["Menganalisis tekstur objek...", "Mendeteksi material penyusun...", "Konsultasi standar lingkungan IDN...", "Mengevaluasi tingkat daur ulang...", "Menyusun tips pengelolaan..."];
 
@@ -53,14 +54,14 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
 
     loadVoices();
     try {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
+      window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
     } catch (e) {
       // ignore
     }
 
     return () => {
       try {
-        window.speechSynthesis.onvoiceschanged = null as any;
+        window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
       } catch (e) {
         // ignore
       }
@@ -117,28 +118,53 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
   };
 
   const toggleVoice = () => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      setError("Fitur suara tidak didukung browser ini.");
+      return;
+    }
+
+    const synth = window.speechSynthesis;
+
     if (isSpeaking) {
-      window.speechSynthesis.cancel();
+      synth.cancel();
+      utteranceRef.current = null;
       setIsSpeaking(false);
     } else {
       if (!result) return;
       const text = `Ini adalah ${result.item}. Kategorinya adalah ${result.kategori}. Tips: ${result.tips}. Gunakan tong sampah ${result.warna_tong}.`;
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "id-ID";
-      // choose a suitable voice if available (prefer Indonesian)
-      const voices = voicesRef.current;
+      utteranceRef.current = utterance;
+
+      // choose a suitable voice if available (prefer Indonesian, then English)
+      const voices = voicesRef.current?.length ? voicesRef.current : synth.getVoices();
       if (voices && voices.length) {
-        utterance.voice = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith("id")) || voices[0];
+        const selectedVoice =
+          voices.find((v) => v.lang?.toLowerCase().startsWith("id")) ||
+          voices.find((v) => v.lang?.toLowerCase().startsWith("en")) ||
+          voices[0];
+        utterance.voice = selectedVoice;
+        utterance.lang = selectedVoice.lang || "id-ID";
+      } else {
+        utterance.lang = "id-ID";
       }
+
       // mobile browsers can be sensitive; set explicit params
       utterance.rate = 1;
       utterance.pitch = 1;
       utterance.volume = 1;
+      utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        setError("Suara gagal diputar di perangkat ini. Coba naikkan volume media / matikan mode senyap.");
+      };
+
       // Speak on the same user gesture (this function is called from button click)
       try {
-        window.speechSynthesis.speak(utterance);
-        setIsSpeaking(true);
+        // Clear pending queue and resume in case synth is paused (common on mobile).
+        synth.cancel();
+        synth.resume();
+        synth.speak(utterance);
       } catch (e) {
         // Some browsers may throw if speech cannot start; fail gracefully
         console.warn("speechSynthesis.speak failed", e);
@@ -202,6 +228,7 @@ export const useTrashScanner = (onResultSaved?: (data: ApiResponse["data"]) => v
     setResult(null);
     setError(null);
     window.speechSynthesis.cancel();
+    utteranceRef.current = null;
     setIsSpeaking(false);
   };
 
