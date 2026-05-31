@@ -117,9 +117,9 @@ const TrashClassifier = ({ onResultSaved }: TrashClassifierProps) => {
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Neural Identify Result</p>
                       <h3 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">{result.item}</h3>
                     </div>
-                    <div className={`px-6 py-4 rounded-2xl flex flex-col items-center justify-center text-white text-center shadow-lg ${getBinStyles(result.warna_tong).badge}`}>
-                      <Trash2 className="w-6 h-6" style={{ display: "inline-block", transform: "translateY(-3px)" }} />
-                      <span className="text-center text-[8px] font-black uppercase" style={{ display: "inline-block", transform: "translateY(-3px)" }}>
+                    <div className={`px-6 py-4 rounded-2xl flex flex-col items-center justify-center gap-1 text-white text-center shadow-lg ${getBinStyles(result.warna_tong).badge}`}>
+                      <Trash2 className="w-6 h-6" />
+                      <span className="text-center text-[8px] leading-none font-black uppercase">
                         {result.warna_tong} Bin
                       </span>
                     </div>
