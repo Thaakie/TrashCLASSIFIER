@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { Recycle } from 'lucide-react'
+import { Link } from "react-router-dom";
+import { Recycle } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -13,18 +13,33 @@ const Footer = () => {
             EcoSort
           </div>
           <p className="text-muted-foreground text-sm max-w-sm leading-relaxed font-medium">
-            Pelopor solusi pengelolaan sampah cerdas berbasis AI di Indonesia. 
-            Membangun masa depan lingkungan yang lebih bersih dan berkelanjutan melalui teknologi Gemini 3 Flash.
+            Pelopor solusi pengelolaan sampah cerdas berbasis AI di Indonesia. Membangun masa depan lingkungan yang lebih bersih dan berkelanjutan melalui teknologi Gemini 3 Flash.
           </p>
         </div>
-        
+
         <div>
           <h4 className="font-black text-xs uppercase tracking-widest mb-6">Navigation</h4>
           <ul className="space-y-4 text-sm font-bold text-muted-foreground">
-            <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
-            <li><Link to="/education" className="hover:text-primary transition-colors">Education</Link></li>
-            <li><Link to="/about" className="hover:text-primary transition-colors">About</Link></li>
-            <li><Link to="/impact" className="hover:text-primary transition-colors">Impact</Link></li>
+            <li>
+              <Link to="/" className="hover:text-primary transition-colors">
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/education" className="hover:text-primary transition-colors">
+                Education
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" className="hover:text-primary transition-colors">
+                About
+              </Link>
+            </li>
+            <li>
+              <Link to="/impact" className="hover:text-primary transition-colors">
+                Impact
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -49,18 +64,16 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      
+
       <div className="max-w-7xl mx-auto px-8 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-          © 2026 EcoSort Engine • Build for Future Environment
-        </p>
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">© 2026 EcoSort • Build for Future Environment</p>
         <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
           <span className="hover:text-primary cursor-pointer">Privacy Policy</span>
           <span className="hover:text-primary cursor-pointer">Terms of Service</span>
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
