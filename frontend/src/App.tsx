@@ -58,7 +58,6 @@ function App() {
   // Calculate Stats for Impact Page
   const stats = {
     total: history.length,
-    carbon: (history.length * 0.15).toFixed(2),
     points: history.length * 15
   }
 

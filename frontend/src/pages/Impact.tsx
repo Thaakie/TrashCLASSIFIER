@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion'
-import { Recycle, BarChart3, Leaf, ShieldCheck, History as HistoryIcon, ArrowUpRight } from 'lucide-react'
+import { Recycle, BarChart3, ShieldCheck, History as HistoryIcon, ArrowUpRight } from 'lucide-react'
 
 interface ImpactProps {
   history: any[]
   stats: {
     total: number
-    carbon: string
     points: number
   }
 }
@@ -20,7 +19,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
       <div className="grid lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Title & Stats */}
-        <div className="lg:col-span-5 space-y-10">
+        <div className="lg:col-span-5 space-y-8">
           <div className="space-y-4">
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
@@ -37,8 +36,8 @@ const Impact = ({ history, stats }: ImpactProps) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-            <div className="bg-primary text-primary-foreground p-8 rounded-2xl shadow-xl relative overflow-hidden group">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+            <div className="bg-primary text-primary-foreground p-7 rounded-2xl shadow-xl relative overflow-hidden group min-h-[180px]">
               <div className="relative z-10 space-y-4">
                 <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
                   <BarChart3 className="w-5 h-5" />
@@ -53,22 +52,8 @@ const Impact = ({ history, stats }: ImpactProps) => {
               <ArrowUpRight className="absolute top-6 right-6 w-5 h-5 opacity-20" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card p-6 rounded-2xl shadow-lg border border-border relative overflow-hidden group">
-                <div className="relative z-10 space-y-4">
-                  <div className="w-10 h-10 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center">
-                    <Leaf className="w-5 h-5" />
-                  </div>
-                  <div className="space-y-0.5">
-                    <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">CO2 Saved</p>
-                    <p className="text-3xl font-black text-emerald-600 tracking-tighter">
-                      {stats.carbon}<span className="text-xs opacity-60 font-medium text-muted-foreground tracking-normal ml-1">kg</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-card p-6 rounded-2xl shadow-lg border border-border relative overflow-hidden group">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="bg-card p-6 rounded-2xl shadow-lg border border-border relative overflow-hidden group min-h-[180px]">
                 <div className="relative z-10 space-y-4">
                   <div className="w-10 h-10 bg-blue-500/10 text-blue-600 rounded-xl flex items-center justify-center">
                     <ShieldCheck className="w-5 h-5" />
@@ -86,7 +71,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
         </div>
 
         {/* Right Column: History */}
-        <div className="lg:col-span-7 bg-card border border-border rounded-2xl p-8 min-h-[500px] flex flex-col shadow-xl relative">
+        <div className="lg:col-span-7 bg-card border border-border rounded-2xl p-8 flex flex-col shadow-xl relative">
           <div className="flex items-center justify-between mb-8">
             <div className="space-y-0.5">
               <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Recent History</p>
@@ -100,7 +85,7 @@ const Impact = ({ history, stats }: ImpactProps) => {
             )}
           </div>
 
-          <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar space-y-3 max-h-[600px]">
+          <div className="overflow-y-auto pr-2 custom-scrollbar space-y-3 max-h-[620px] min-h-[360px]">
             {history.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center py-20 space-y-4">
                 <div className="w-20 h-20 bg-muted rounded-xl flex items-center justify-center">
