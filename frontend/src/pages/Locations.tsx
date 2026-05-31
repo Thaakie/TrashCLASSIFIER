@@ -47,10 +47,12 @@ const STATIC_LOCATIONS: WasteBank[] = [
   },
 ];
 
+type SearchMode = "fast" | "accurate";
+
 /**
  * Helper to fetch with a timeout and explicit logging
  */
-const fetchWithTimeout = async (url: string, options: any = {}, timeout = 80000) => {
+const fetchWithTimeout = async (url: string, options: any = {}, timeout = 120000) => {
   const controller = new AbortController();
   const id = setTimeout(() => {
     console.warn(`[Timeout] Server ${new URL(url).hostname} tidak merespon dalam ${timeout}ms. Memutus koneksi...`);
@@ -73,6 +75,9 @@ const Locations = () => {
   const [realtimeLocations, setRealtimeLocations] = useState<WasteBank[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notFoundNearby, setNotFoundNearby] = useState(false);
+  const [radiusKm, setRadiusKm] = useState(10);
+  const [searchMode, setSearchMode] = useState<SearchMode>("accurate");
   const [logs, setLogs] = useState<string[]>([]);
 
   const addLog = (msg: string) => {
@@ -81,9 +86,10 @@ const Locations = () => {
     console.log(msg);
   };
 
-  const fetchNearbyBankSampah = async () => {
+  const fetchNearbyBankSampah = async (radius = radiusKm) => {
     setLogs([]);
-    addLog("--- Memulai Pencarian Lokasi Terdekat ---");
+    const perServerTimeout = searchMode === "fast" ? 25000 : 60000;
+    addLog(`--- Memulai Pencarian Lokasi Terdekat (${radius} km, mode: ${searchMode === "fast" ? "Cepat" : "Akurat"}) ---`);
 
     if (!navigator.geolocation) {
       setError("Geolocation tidak didukung oleh browser Anda.");
@@ -91,12 +97,13 @@ const Locations = () => {
     }
 
     if (!navigator.onLine) {
-      setError("Anda sedang offline. Silahkan cek koneksi internet Anda.");
-      return;
-    }
+    setError("Anda sedang offline. Silakan cek koneksi internet Anda.");
+    return;
+  }
 
     setLoading(true);
     setError(null);
+    setNotFoundNearby(false);
 
     try {
       addLog("[1/3] Mengambil koordinat GPS...");
@@ -110,15 +117,17 @@ const Locations = () => {
       const { latitude, longitude } = position.coords;
       addLog(`[GPS Sukses] Lat: ${latitude}, Lon: ${longitude}`);
 
+      const radiusMeters = radius * 1000;
       const query = `
         [out:json][timeout:25];
         (
-          node["name"~"Sampah",i](around:10000, ${latitude}, ${longitude});
-          node["name"~"TPS3R",i](around:10000, ${latitude}, ${longitude});
-          node["amenity"="waste_transfer_station"](around:10000, ${latitude}, ${longitude});
-          node["recycling_type"="centre"](around:10000, ${latitude}, ${longitude});
+          nwr["name"~"(Bank Sampah|Sampah|TPS3R|TPS\\b|TPST|Daur Ulang|Recycle|DLH)",i](around:${radiusMeters}, ${latitude}, ${longitude});
+          nwr["amenity"="waste_transfer_station"](around:${radiusMeters}, ${latitude}, ${longitude});
+          nwr["amenity"="recycling"](around:${radiusMeters}, ${latitude}, ${longitude});
+          nwr["amenity"="waste_disposal"](around:${radiusMeters}, ${latitude}, ${longitude});
+          nwr["recycling_type"="centre"](around:${radiusMeters}, ${latitude}, ${longitude});
         );
-        out body;
+        out center tags;
       `;
 
       const instances = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter", "https://lz4.overpass-api.de/api/interpreter", "https://z.overpass-api.de/api/interpreter"];
@@ -133,7 +142,7 @@ const Locations = () => {
         addLog(`[Percobaan ${index + 1}] Mencoba server: ${host}...`);
 
         try {
-          const response = await fetchWithTimeout(`${instance}?data=${encodeURIComponent(query)}`, {}, 30000);
+          const response = await fetchWithTimeout(`${instance}?data=${encodeURIComponent(query)}`, {}, perServerTimeout);
           addLog(`[Respon] ${host} mengembalikan status: ${response.status} ${response.statusText}`);
 
           if (!response.ok) {
@@ -142,23 +151,43 @@ const Locations = () => {
           }
 
           const data = await response.json();
-          addLog(`[Data] Berhasil menerima ${data.elements?.length || 0} lokasi dari ${host}`);
+          const elements: any[] = Array.isArray(data.elements) ? data.elements : [];
+          addLog(`[Data] Berhasil menerima ${elements.length} lokasi dari ${host}`);
 
-          const mapped: WasteBank[] = data.elements.map((el: any) => ({
-            name: el.tags.name || "Fasilitas Pengelolaan Sampah",
-            city: el.tags["addr:city"] || "Sekitar Anda",
-            address: el.tags["addr:full"] || el.tags["addr:street"] || "Lokasi terdeteksi via satelit",
-            phone: el.tags.phone || el.tags["contact:phone"] || "Hubungi via Maps",
-            hours: el.tags.opening_hours || "Cek di lokasi",
-            types: ["Anorganik", "Recyclables"],
-            latLon: `${el.lat || el.center?.lat},${el.lon || el.center?.lon}`,
-            coordinates: `https://www.google.com/maps?q=${el.lat || el.center?.lat},${el.lon || el.center?.lon}`,
-            isRealtime: true,
-          }));
+          if (elements.length === 0) {
+            setRealtimeLocations([]);
+            setNotFoundNearby(true);
+            addLog(`[Info] Not found: tidak ada fasilitas dalam radius ${radius} km.`);
+            success = true;
+            break;
+          }
+
+          const mapped: WasteBank[] = elements
+            .map((el: any) => ({
+              name: el.tags.name || "Fasilitas Pengelolaan Sampah",
+              city: el.tags["addr:city"] || "Sekitar Anda",
+              address: el.tags["addr:full"] || el.tags["addr:street"] || "Lokasi terdeteksi via satelit",
+              phone: el.tags.phone || el.tags["contact:phone"] || "Hubungi via Maps",
+              hours: el.tags.opening_hours || "Cek di lokasi",
+              types: ["Anorganik", "Recyclables"],
+              latLon: `${el.lat || el.center?.lat},${el.lon || el.center?.lon}`,
+              coordinates: `https://www.google.com/maps?q=${el.lat || el.center?.lat},${el.lon || el.center?.lon}`,
+              isRealtime: true,
+            }))
+            .filter((loc) => !loc.latLon.includes("undefined"));
+
+          if (!mapped.length) {
+            setRealtimeLocations([]);
+            setNotFoundNearby(true);
+            addLog(`[Info] Not found: data ada, tapi koordinat valid tidak ditemukan dalam radius ${radius} km.`);
+            success = true;
+            break;
+          }
 
           setRealtimeLocations(mapped);
+          setNotFoundNearby(false);
           success = true;
-          addLog("[Sukses] Data berhasil dipetakan dan ditampilkan.");
+          addLog(`[Sukses] Data berhasil dipetakan dan ditampilkan (${mapped.length} lokasi).`);
         } catch (err: any) {
           lastError = err.name === "AbortError" ? "Koneksi timeout" : err.message;
           addLog(`[Gagal] Server ${host}: ${lastError}`);
@@ -195,23 +224,61 @@ const Locations = () => {
             Nearby <br />
             <span className="text-primary italic">Facilities.</span>
           </h2>
-          <p className="text-muted-foreground font-medium text-lg leading-relaxed">Temukan Bank Sampah dan TPS3R terdekat secara instan di seluruh Indonesia.</p>
+          <p className="text-muted-foreground font-medium text-lg leading-relaxed">Temukan Bank Sampah dan TPS3R terdekat dalam radius 10 km dari lokasi Anda.</p>
 
           <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
             <button
-              onClick={fetchNearbyBankSampah}
+              onClick={() => fetchNearbyBankSampah()}
               disabled={loading}
               className="flex items-center justify-center gap-4 px-8 py-4 bg-primary text-primary-foreground rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/10 disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Navigation className="w-4 h-4" />}
               {loading ? "Mencari..." : "Temukan Sekitar Saya"}
             </button>
+            <div className="inline-flex rounded-[1rem] border border-border overflow-hidden w-fit">
+              <button
+                onClick={() => setSearchMode("fast")}
+                disabled={loading}
+                className={`px-4 py-3 text-[10px] font-black uppercase tracking-widest transition-colors ${
+                  searchMode === "fast" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"
+                }`}
+              >
+                Cepat
+              </button>
+              <button
+                onClick={() => setSearchMode("accurate")}
+                disabled={loading}
+                className={`px-4 py-3 text-[10px] font-black uppercase tracking-widest transition-colors ${
+                  searchMode === "accurate" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"
+                }`}
+              >
+                Akurat
+              </button>
+            </div>
           </div>
 
           {error && (
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-rose-500 text-[10px] font-bold flex items-center justify-center lg:justify-start gap-2">
               <AlertCircle className="w-3 h-3" /> {error}
             </motion.p>
+          )}
+
+          {notFoundNearby && !error && (
+            <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="inline-flex flex-wrap items-center gap-2 px-3 py-2 rounded-xl border border-amber-300/60 bg-amber-50/70 text-amber-800 text-[10px] font-bold">
+              <AlertCircle className="w-3 h-3" />
+              Not found: tidak ada fasilitas dalam radius {radiusKm} km dari titik GPS Anda.
+              {radiusKm < 25 && (
+                <button
+                  onClick={() => {
+                    setRadiusKm(25);
+                    fetchNearbyBankSampah(25);
+                  }}
+                  className="ml-1 px-2.5 py-1 rounded-lg bg-amber-600 text-white text-[9px] uppercase tracking-wider"
+                >
+                  Perluas ke 25 km
+                </button>
+              )}
+            </motion.div>
           )}
 
           {/* Live fetch logs (mirrors console) */}
