@@ -97,9 +97,9 @@ const Locations = () => {
     }
 
     if (!navigator.onLine) {
-    setError("Anda sedang offline. Silakan cek koneksi internet Anda.");
-    return;
-  }
+      setError("Anda sedang offline. Silakan cek koneksi internet Anda.");
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -239,18 +239,14 @@ const Locations = () => {
               <button
                 onClick={() => setSearchMode("fast")}
                 disabled={loading}
-                className={`px-4 py-3 text-[10px] font-black uppercase tracking-widest transition-colors ${
-                  searchMode === "fast" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"
-                }`}
+                className={`px-4 py-3 text-[10px] font-black uppercase tracking-widest transition-colors ${searchMode === "fast" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"}`}
               >
                 Cepat
               </button>
               <button
                 onClick={() => setSearchMode("accurate")}
                 disabled={loading}
-                className={`px-4 py-3 text-[10px] font-black uppercase tracking-widest transition-colors ${
-                  searchMode === "accurate" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"
-                }`}
+                className={`px-4 py-3 text-[10px] font-black uppercase tracking-widest transition-colors ${searchMode === "accurate" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"}`}
               >
                 Akurat
               </button>
